@@ -2,8 +2,17 @@
 
 nothing to see here
 
-# Development
 
-$ bundle install
+## Initialize development environment
 
-$ bundle exec jekyll serve
+`$ make init`
+
+
+## Download updated CSV
+
+`$ make csv`
+
+
+## Run local server
+
+`$ make serve`
