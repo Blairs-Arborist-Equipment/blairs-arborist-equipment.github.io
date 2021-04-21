@@ -1,0 +1,83 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+  <loc>https://blairsae.com/</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>1.00</priority>
+</url>
+{%- for c in site.data.categories %}
+<url>
+  <loc>https://blairsae.com/products/{{ c.name | slugify }}.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.90</priority>
+</url>
+{%- endfor %}
+<url>
+  <loc>https://blairsae.com/quote.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/the-arborists-creed-and-principles-of-practice.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/euc-men-by-definition.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/when-the-oak-man-met-the-euc-men-by-donald-f-blair.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/a-few-words-about-the-blair-saddle.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/wire-cored-fliplines.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/how-to-tie-a-becket-bend-in-a-wire-cored-flipline.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/climbers-pads-straps.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/tree-and-pole-climbing-spurs.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/replacement-parts-by-brand.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/adjustable-lanyards.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://blairsae.com/learning-center/fliplines-and-lanyards.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.70</priority>
+</url>
+</urlset>

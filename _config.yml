@@ -1,0 +1,40 @@
+# Site settings
+title: Blair's Arborist Equipment
+description: >
+  Serving the Trees Since 1911
+author: Don Blair
+email: sales@blairsae.com
+url: https://blairsae.com
+address:
+  - street: 16800 Blake Road
+  - city: Hagerstown
+  - state: MD
+  - zip: 21740
+phone:
+  main: "(888) 800-3633"
+  fax: "(888) 800-3633"
+image:
+  url: "https://images.blairsae.com"
+recaptcha:
+  site_key: "6LemoZwaAAAAAPKrvVVeYh6oShK_0VL1OFCxjs0s"
+mailer:
+  url: "https://api.blairsae.com/mailer"
+
+# Build settings
+markdown: kramdown
+sass:
+  style: compact
+plugins:
+  - jekyll-seo-tag
+exclude:
+  - "*.swp"
+  - Gemfile*
+  - Pipfile*
+  - Makefile
+  - README.md
+  - .gitignore
+  - .jekyll-metadata
+  - build/
+  - .bundle/
+  - .git/
+  - vendor/

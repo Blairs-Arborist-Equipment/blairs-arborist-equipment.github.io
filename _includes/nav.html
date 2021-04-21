@@ -1,0 +1,35 @@
+{% assign linkHrefHome = "/" %}
+{% assign linkHrefProducts = "/#categories" %}
+{% assign linkHrefLearningCenter = "/learning-center.html" %}
+{% assign linkHrefQuote = "/quote.html" %}
+{% if page.url == "/" %}
+  {% assign linkHrefHome = "#page-top" %}
+{% elsif page.url contains '/products/' %}
+  {% assign linkHrefProducts = "#page-top" %}
+{% elsif page.url contains 'learning-center.html' %}
+  {% assign linkHrefLearningCenter = "#page-top" %}
+{% elsif page.url contains 'quote.html' %}
+  {% assign linkHrefQuote = "#page-top" %}
+{% endif %}
+<nav class="navbar navbar-expand-lg navbar-light fixed-top text-uppercase" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger" href="/">{{ site.title }}</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto my-2 my-lg-0">
+        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{{ linkHrefHome }}">Home</a></li>
+        <li class="nav-item dropdown" class="nav-link js-scroll-trigger" href="{{ linkHrefProducts }}">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ linkHrefProducts }}" aria-haspopup="true" aria-expanded="false">Products</a>
+          <div class="dropdown-menu">
+            {% for c in site.data.categories %}
+            <a class="dropdown-item" href="/products/{{ c.name | slugify }}.html">{{ c.name }}</a>
+            {% endfor %}
+          </div>
+        </li>
+        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{{ linkHrefLearningCenter }}">Learning Center</a></li>
+        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{{ linkHrefQuote }}" id="nav-quote">Quote</a></li>
+        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>

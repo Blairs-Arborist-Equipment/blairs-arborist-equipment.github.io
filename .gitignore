@@ -1,0 +1,8 @@
+_site/
+.sass-cache/
+*.swp
+.bundle/
+vendor/
+.env
+.venv
+.jekyll-metadata

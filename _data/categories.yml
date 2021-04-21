@@ -1,0 +1,120 @@
+---
+- name: Arborist Tree Climbing Gear
+  children:
+    - name: Arborist Saddles and Harnesses
+    - name: Captive Eye Locksafe Carabiners for Climbing Systems
+    - name: Climber’s Gear Bags
+    - name: Climbers, Pads, Straps, Parts
+      children:
+        - name: Euc Pads
+        - name: L Pads
+        - name: Tee Pads
+    - name: Double Locking Rope Snap Hooks
+    - name: Fliplines and Lanyards
+    - name: Gear and Rope Bags
+    - name: Modular Saddles
+    - name: Spurs, Gaffs, Hooks, Climbing Irons
+    - name: Tree Climbing Rope
+    - name: Tree Climbing System Components
+      children:
+        - name: Figure Eight with Ears
+    - name: Tree Saddles
+- name: Book Store and Gift Shop
+  children:
+    - name: Bandannas
+    - name: Bumper Stickers
+    - name: Buttons
+    - name: Dynaflex Gyro Exercisor
+    - name: "Reference Books: Tree and Shrub Diseases"
+- name: Cabling and Bracing
+  children:
+    - name: Cabling & Bracing Hardware
+    - name: Cabling Tools
+    - name: Common Grade Strand
+    - name: Extra-High Strength Strand
+    - name: Root Block Root Barrier
+    - name: Thimbles
+    - name: Tree Grips
+- name: Job Site
+  children:
+    - name: Aerial Lift Equipment
+    - name: Clean-Up Tools
+    - name: Paul Bunyan Tools
+    - name: Traffic Safety
+    - name: Tripod Orchard Ladders
+- name: Personal Safety
+  children:
+    - name: Back Support
+    - name: Back-A-Line
+    - name: Chainsaw Protective Clothing
+    - name: Eye Protection
+    - name: Hand Protection
+    - name: Head Protection
+    - name: Hearing Protection
+- name: Rigging and Tree Removal Equipment
+  children:
+    - name: Figure Eight Descenders with Ears
+    - name: Lowering Devices
+    - name: Playing with Blocks and Tackle
+    - name: Porta-Wraps
+    - name: Rigging Plate
+    - name: "Rigging Slings: Nylon Webbing, Round Slings"
+    - name: 'Rigging Slings: Spliced "Dead-Eye" Rope Slings'
+    - name: Screw Pin Anchor Shackles
+- name: Ropes
+  children:
+    - name: Climbing Line
+    - name: 16-Strand Climbing Line
+    - name: Tree Rope
+    - name: Yale Climbing Line
+    - name: Lowering Line
+    - name: Prusik Cords
+    - name: Rope Bags
+    - name: Rope Tools
+    - name: "Service Lines: 3-Strand"
+    - name: "Throw Line: Shot Pouches"
+- name: Sharp Things That Cut
+  children:
+    - name: ARS Hand Pruners
+    - name: "ARS Long Arm Pruners: 2', 4', 6'"
+    - name: Corona Hedge Shears
+    - name: Corona Long Handled Bypass Loppers
+    - name: "Ferrules: Sectional Fiberglass"
+      children:
+        - name: "Ferrules: Dicke Brand"
+    - name: Fiberglass Pruning Poles
+      children:
+        - name: "Fiberglass Pruning Poles: Sectional"
+        - name: "Fiberglass Pruning Poles: Straight"
+    - name: Files, Chain Saw
+    - name: Hand Pruners, Secateurs, Shears, Pruning Shears
+      children:
+        - name: Corona Hand Pruners
+        - name: Felco Hand Pruners
+    - name: Handsaw Scabbards
+    - name: "Handsaw Scabbards: Belting"
+    - name: "Handsaw Scabbards: Leather"
+    - name: Handsaws, Fanno, Original
+    - name: Handsaws, Replacement Blades
+    - name: Handsaws, Tri-Edge, Fanno
+    - name: Handsaws, Tri-Edge, SMMC
+    - name: Long Handled Pruners
+    - name: Loppers
+    - name: Lopping Shears
+    - name: "Pole Pruners: Heads, Sets, Parts"
+      children:
+        - name: Marvin Pruner Head
+    - name: "Pole Saws: Heads, Blades, Parts"
+      children:
+        - name: Socket Head, Pole Saw, Fanno Brand
+    - name: Replacement Handsaw Handles
+- name: Snaps, Rings, Thimbles and Things
+  children:
+    - name: Chainsaw Straps and Lanyards
+    - name: Double Locking Carabiners
+    - name: Double Locking Rope Snaps
+    - name: False Crotch Slings
+    - name: Figure Eight with Ears
+    - name: Rope Thimbles
+    - name: Up and Down Devices
+    - name: We've Got Connections

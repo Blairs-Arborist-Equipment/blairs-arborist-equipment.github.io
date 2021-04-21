@@ -1,0 +1,96 @@
+{% capture category-slug %}{{ page.title | slugify }}{% endcapture %}
+<section class="page-section" id="products">
+  <div class="container align-center">
+    <form name="{{ category-slug }}">
+      {% for p in site.data.products %}
+      {% if p.category contains page.title %}
+      {% assign skus = p.skus | split: ";" %}
+      {% assign tags = p.category | replace: page.title, "" | split: "|" %}
+      {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      <!-- Start -->
+      <div class="card mb-3 border-primary" style="max-width: 100%;" id="{{ product-slug }}">
+        <div class="row no-gutters">
+          <div class="col-md-4" style="max-height:640px;overflow:hidden;">
+            {% if p.images %}
+              {% assign images = p.images | split: "|" %}
+              {% if images.size == 1 %}
+                <div>
+                  <picture>
+                    <source srcset="{{ images[0] | replace: ".jpg", ".webp" }}" type="image/webp">
+                    <source srcset="{{ images[0] }}" type="image/jpeg">
+                    <img src="{{ images[0] }}" class="img-fluid d-block w-100" loading="lazy">
+                  </picture>
+                </div>
+              {% else %}
+                <div id="carousel-{{ product-slug }}" class="carousel slide" data-ride="carousel">
+                  <ol class="carousel-indicators">
+                    {% for image in images %}
+                      {% if forloop.index == 1 %}
+                        {% assign active = 'class="active"' %}
+                      {% else %}
+                        {% assign active = '' %}
+                      {% endif %}
+                      <li data-target="#carousel-{{ product-slug }}" data-slide-to="{{ forloop.index }}" {{ active }}></li>
+                    {% endfor %}
+                  </ol>
+                  <div class="carousel-inner">
+                    {% for image in images %}
+                      {% if forloop.index == 1 %}
+                        {% assign active = 'active' %}
+                      {% else %}
+                        {% assign active = '' %}
+                      {% endif %}
+                        <div class="carousel-item {{ active }}">
+                          <picture>
+                            <source srcset="{{ image | replace: ".jpg", ".webp" }}" type="image/webp">
+                            <source srcset="{{ image }}" type="image/jpeg">
+                            <img src="{{ image }}" class="img-fluid d-block w-100" loading="lazy">
+                          </picture>
+                        </div>
+                    {% endfor %}
+                  </div>
+                  <a class="carousel-control-prev" href="#carousel-{{ product-slug }}" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carousel-{{ product-slug }}" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </div>
+              {% endif%}
+            {% else %}
+              <img src="{{ site.image.url }}/assets/products/{{ category_slug }}.jpg" style="max-width: 100%;" loading="lazy">
+            {% endif %}
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title" id="name-{{ product-slug }}">
+                <a href="{{ page.url }}#{{ product-slug }}" class="text-dark">{{ p.name }}</a>
+              </h5>
+              <p class="card-text">{{ p.description }}</p>
+              <p class="card-text">
+              {% for tag in tags %}
+                <span class="badge badge-pill badge-info">{{ tag }}</span>
+              {% endfor %}
+              </p>
+              <div class="input-group input-group-sm">
+                <select class="custom-select" id="sku-{{ product-slug }}">
+                  {% for sku in skus %}
+                    <option value="{{ sku }}">{{ sku }}</option>
+                  {% endfor %}
+                </select>
+                <div class="input-group-append">
+                  <button id="btn-{{ product-slug }}" class="btn btn-outline-secondary" data-toggle="popover" data-content="Added" data-trigger="focus" type="button" onclick="saveItem('{{ category-slug }}', '{{ product-slug }}')">Add to Quote</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End -->
+      {% endif %}
+      {% endfor %}
+    </form>
+  </div>
+</section>

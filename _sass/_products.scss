@@ -1,0 +1,7 @@
+@charset "UTF-8";
+
+.card-body table {
+  @extend .table;
+  @extend .table-striped;
+  @extend .table-responsive-lg;
+}
