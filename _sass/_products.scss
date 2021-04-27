@@ -5,3 +5,9 @@
   @extend .table-striped;
   @extend .table-responsive-lg;
 }
+
+.category:hover {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  zoom: 1;
+}

@@ -2,13 +2,13 @@
   <div class="container">
     <div class="row">
       {% for c in site.data.categories %}
-        <div class="col-lg-3 col-md-6 text-center">
-          <div class="mt-5">
+        <div class="col-lg-3 col-md-4 col-sm-6 text-center">
+          <div class="card bg-light mb-4 category">
             <a href="/products/{{ c.name | slugify }}.html" target="_self">
-              <h4 class="h4 mb-2" style="height: 2.5em;">{{ c.name }}</h4>
-              <p class="text-muted mb-0">
-                <img class="img-fluid img-thumbnail" style="max-width:210px;max-height:220px;" src="{{ site.image.url }}/assets/categories/{{ c.name | slugify }}.jpg">
-              </p>
+            <img class="card-img-top" style="" src="{{ site.image.url }}/assets/categories/{{ c.name | slugify }}.jpg">
+            <div class="card-body">
+              <h5 class="card-title align-middle" style="height: 1.5em;max-height: 2.5em;">{{ c.name }}</h5>
+            </div>
             </a>
           </div>
         </div>
