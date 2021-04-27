@@ -11,6 +11,7 @@
         .u-row { width: 600px !important; }
         .u-row .u-col { vertical-align: top; }
         .u-row .u-col-100 { width: 600px !important; }
+        .info { width: 50% !important; }
       }
       @media (max-width: 620px) {
         .u-row-container {
@@ -26,6 +27,7 @@
         .u-row { width: calc(100% - 40px) !important; }
         .u-col { width: 100% !important; }
         .u-col > div { margin: 0 auto; }
+        .info { width: 100% !important; text-align: center !important; }
       }
       body { margin: 0; padding: 0; }
       table, tr, td { vertical-align: top; border-collapse: collapse; }
@@ -148,26 +150,24 @@
                 <table style="font-family:'Cabin',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                   <tbody>
                     <tr>
-                      <td style="overflow-wrap:break-word;word-break:break-word;padding:33px 55px;font-family:'Cabin',sans-serif;" align="center">
+                      <td style="overflow-wrap:break-word;word-break:break-word;padding:15px 20px 15px 10px;font-family:'Cabin',sans-serif;" align="center">
                         <div style="color: #000000; line-height: 160%; text-align: center; word-wrap: break-word;">
                           <p style="font-size: 14px; line-height: 160%;">
-                            <span style="font-size: 18px; line-height: 28.8px;">
+                            <span style="font-size: 18px; line-height: 28.8px;padding: 2px;">
                               <h2 style="width:100%;padding:5px;background-color:#F2F4F9;">Customer Information</h2>
                               <div style="width: 100%;">
-                                <div style="float: left;text-align: left;width: 50%;">
+                                <div class="info" style="float: left;text-align: left;width: 50%;">
                                   <p>{{ name }}</p>
                                   <p>{{ company }}</p>
                                 </div>
-                                <div style="float: right;text-align: right;width: 50%;">
+                                <div class="info" style="float: right;text-align: right;width: 50%;">
                                   <p>{{ email }}</p>
                                   <p><a href="tel:{{ phone }}">{{ phone }}</a></p>
                                 </div>
                               </div>
-                              <div>&nbsp;</div>
-                              <div style="width: 100%;">
+                              <div style="max-width: 100%;">
                                 {{ address }}
                               </div>
-                              <div>&nbsp;</div>
                               <h2 style="width:100%;padding:5px;background-color:#F2F4F9;">{{ content_title }}</h2>
                               <div style="width:100%;">
                                 {{ content }}
