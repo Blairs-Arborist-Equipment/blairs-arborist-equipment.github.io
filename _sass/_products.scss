@@ -4,6 +4,14 @@
   @extend .table !optional;
   @extend .table-striped !optional;
   width: 100%;
+  color: var(--color-text-light);
+  border-color: rgba(76, 175, 80, 0.2);
+}
+
+.card-body table th,
+.card-body table td {
+  color: var(--color-text-light);
+  border-color: rgba(76, 175, 80, 0.2);
 }
 
 /* Product grid layout — single column for clean focus */
