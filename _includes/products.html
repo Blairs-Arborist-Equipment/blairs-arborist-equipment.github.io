@@ -2,6 +2,13 @@
 <section class="page-section" id="products">
   <div class="container align-center">
     <h2 class="visually-hidden">Product Listing</h2>
+
+    <div class="row mb-4 g-3 justify-content-center">
+      <div class="col-md-6">
+        <input type="text" id="product-search-input" class="form-control" placeholder="Search by name, description, or SKU…" aria-label="Search products in this category">
+      </div>
+    </div>
+
       <div class="products-container" id="products-container" role="list">
       {% for p in site.data.products %}
       {% if p.category contains page.title %}
@@ -9,7 +16,7 @@
       {% assign tags = p.category | replace: page.title, "" | split: "|" %}
       {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
       <!-- Start -->
-      <div class="card mb-3" style="max-width: 100%;" id="{{ product-slug }}" role="listitem">
+      <div class="card mb-3" style="max-width: 100%;" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-skus="{{ p.skus | escape }}">
         <div class="row g-0">
           <div class="col-md-4" style="max-height:640px;overflow:hidden;">
             {% if p.images %}
@@ -116,5 +123,11 @@
       {% endif %}
       {% endfor %}
       </div>
+
+    <div id="search-result-count" class="text-muted my-3" aria-live="polite"></div>
+
+    <div id="search-no-results" class="d-none text-center py-5" aria-live="polite">
+      <p class="text-muted">No products found matching your search.</p>
+    </div>
   </div>
 </section>

@@ -22,7 +22,7 @@
       {% assign skus = p.skus | split: ";" %}
       {% assign tags = p.category | split: "|" %}
       {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
-      <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ p.name }}" data-description="{{ p.description }}" data-category="{{ p.category }}" data-skus="{{ p.skus }}">
+      <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-category="{{ p.category | escape }}" data-skus="{{ p.skus | escape }}">
         {% if images.size > 0 %}
           <picture>
             <source srcset="{{ images[0] | replace: '.jpg', '.webp' }}" type="image/webp">
