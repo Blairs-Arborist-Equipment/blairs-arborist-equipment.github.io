@@ -34,7 +34,7 @@
           <h3 class="card-title" id="name-{{ product-slug }}">
             <a href="{{ p.url }}" class="text-wrap">{{ p.name }}</a>
           </h3>
-          <p class="card-text description-content">{{ p.description }}</p>
+          <div class="card-text description-content">{{ p.description }}</div>
           <p class="card-text">
           {% for tag in tags %}
             <span class="badge rounded-pill badge-earth text-dark">{{ tag }}</span>
