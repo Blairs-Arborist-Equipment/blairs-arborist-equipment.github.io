@@ -11,16 +11,27 @@
 {% elsif page.url contains 'quote.html' %}
   {% assign linkHrefQuote = "#page-top" %}
 {% endif %}
+<a class="skip-link visually-hidden-focusable" href="#main-content">Skip to main content</a>
 <nav class="navbar navbar-expand-lg navbar-light fixed-top text-uppercase" id="mainNav">
-  <div class="container">
+  <div class="container d-flex align-items-center">
     <a class="navbar-brand js-scroll-trigger" href="/">{{ site.title }}</a>
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="nav-icons ms-auto me-3">
+      <button class="nav-search-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#navSearchOffcanvas" aria-controls="navSearchOffcanvas" aria-expanded="false" aria-label="Open product search">
+        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+      </button>
+      <button id="theme-toggle-btn" type="button" onclick="toggleTheme()" aria-label="Switch to light mode">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+      </button>
+    </div>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto my-2 my-lg-0">
+      <ul class="navbar-nav ms-auto my-2 my-lg-0">
         <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{{ linkHrefHome }}">Home</a></li>
-        <li class="nav-item dropdown" class="nav-link js-scroll-trigger" href="{{ linkHrefProducts }}">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ linkHrefProducts }}" aria-haspopup="true" aria-expanded="false">Products</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ linkHrefProducts }}" role="button" aria-expanded="false">Products</a>
           <div class="dropdown-menu">
+            <a class="dropdown-item fw-bold" href="/products/">Search All Products</a>
+            <div class="dropdown-divider"></div>
             {% for c in site.data.categories %}
             <a class="dropdown-item" href="/products/{{ c.name | slugify }}.html">{{ c.name }}</a>
             {% endfor %}
@@ -30,6 +41,19 @@
         <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{{ linkHrefQuote }}" id="nav-quote">Quote</a></li>
         <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
       </ul>
+    </div>
+  </div>
+  <div class="offcanvas offcanvas-top" tabindex="-1" id="navSearchOffcanvas" aria-labelledby="navSearchOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title visually-hidden" id="navSearchOffcanvasLabel">Search Products</h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close search"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form class="d-flex gap-2" role="search" action="/products/" method="get">
+        <label for="navSearchInput" class="visually-hidden">Search products</label>
+        <input class="form-control form-control-lg" type="search" id="navSearchInput" name="q" placeholder="Search products…">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
     </div>
   </div>
 </nav>

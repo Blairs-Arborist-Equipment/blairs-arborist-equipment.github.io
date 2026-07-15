@@ -1,0 +1,62 @@
+<section class="page-section" id="search">
+  <div class="container">
+    <div class="row mb-4 g-3">
+      <div class="col-md-6">
+        <input type="text" id="product-search-input" class="form-control" placeholder="Search by name, description, or SKU…" aria-label="Search products">
+      </div>
+      <div class="col-md-6">
+        <select id="product-search-category" class="form-select" aria-label="Filter by category">
+          <option value="">All Categories</option>
+          {% for c in site.data.categories %}
+            <option value="{{ c.name }}">{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <h2 class="visually-hidden">Product Catalog</h2>
+
+    <div class="products-container" id="products-container" role="list">
+      {% for p in site.data.products %}
+      {% assign images = p.images | split: "|" %}
+      {% assign skus = p.skus | split: ";" %}
+      {% assign tags = p.category | split: "|" %}
+      {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ p.name }}" data-description="{{ p.description }}" data-category="{{ p.category }}" data-skus="{{ p.skus }}">
+        {% if images.size > 0 %}
+          <picture>
+            <source srcset="{{ images[0] | replace: '.jpg', '.webp' }}" type="image/webp">
+            <source srcset="{{ images[0] }}" type="image/jpeg">
+            <img src="{{ images[0] }}" class="card-img-top" loading="lazy" alt="{{ p.name }}">
+          </picture>
+        {% endif %}
+        <div class="card-body">
+          <h3 class="card-title" id="name-{{ product-slug }}">
+            <a href="{{ p.url }}" class="text-wrap">{{ p.name }}</a>
+          </h3>
+          <p class="card-text description-content">{{ p.description }}</p>
+          <p class="card-text">
+          {% for tag in tags %}
+            <span class="badge rounded-pill badge-earth text-dark">{{ tag }}</span>
+          {% endfor %}
+          </p>
+          <div class="input-group input-group-sm">
+            <select class="form-select" id="sku-{{ product-slug }}">
+              {% for sku in skus %}
+                <option value="{{ sku }}">{{ sku }}</option>
+              {% endfor %}
+            </select>
+            <button id="btn-{{ product-slug }}" class="btn btn-outline-secondary btn-add-to-quote" data-bs-toggle="popover" data-bs-content="Added" data-bs-trigger="focus" type="button" onclick="saveItem('', '{{ product-slug }}')">Add to Quote</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="search-result-count" class="text-muted my-3" aria-live="polite"></div>
+
+    <div id="search-no-results" class="d-none text-center py-5" aria-live="polite">
+      <p class="text-muted">No products found matching your search.</p>
+    </div>
+  </div>
+</section>
