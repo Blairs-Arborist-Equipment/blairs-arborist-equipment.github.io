@@ -33,11 +33,6 @@
         <li class="nav-item"><a class="nav-link js-scroll-trigger" href="{{ linkHrefQuote }}" id="nav-quote">Quote</a></li>
         <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
         <li class="nav-item">
-          <button class="nav-link nav-search-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#navSearchOffcanvas" aria-controls="navSearchOffcanvas" aria-expanded="false" aria-label="Open product search">
-            <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-          </button>
-        </li>
-        <li class="nav-item">
           <button id="theme-toggle-btn" class="nav-link" type="button" onclick="toggleTheme()" aria-label="Switch to light mode">
             <i class="fas fa-moon" aria-hidden="true"></i>
           </button>
@@ -46,16 +41,3 @@
     </div>
   </div>
 </nav>
-<div class="offcanvas offcanvas-top" tabindex="-1" id="navSearchOffcanvas" aria-labelledby="navSearchOffcanvasLabel">
-  <div class="offcanvas-header">
-    <h2 class="offcanvas-title visually-hidden" id="navSearchOffcanvasLabel">Search Products</h2>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close search"></button>
-  </div>
-  <div class="offcanvas-body">
-    <form class="d-flex gap-2" role="search" action="/products/" method="get">
-      <label for="navSearchInput" class="visually-hidden">Search products</label>
-      <input class="form-control form-control-lg" type="search" id="navSearchInput" name="q" placeholder="Search products…">
-      <button class="btn btn-primary" type="submit">Search</button>
-    </form>
-  </div>
-</div>
