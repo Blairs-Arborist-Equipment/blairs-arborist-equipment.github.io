@@ -8,6 +8,11 @@ layout: null
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>1.00</priority>
 </url>
+<url>
+  <loc>https://blairsae.com/products/</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.85</priority>
+</url>
 {%- for c in site.data.categories %}
 <url>
   <loc>https://blairsae.com/products/{{ c.name | slugify }}.html</loc>
@@ -15,6 +20,11 @@ layout: null
   <priority>0.90</priority>
 </url>
 {%- endfor %}
+<url>
+  <loc>https://blairsae.com/privacy-policy.html</loc>
+  <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+  <priority>0.30</priority>
+</url>
 <url>
   <loc>https://blairsae.com/quote.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>

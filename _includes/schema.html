@@ -1,0 +1,42 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "{{ site.title }}",
+  "url": "{{ site.url }}",
+  "email": "{{ site.email }}",
+  "sameAs": ["https://www.facebook.com/blairsarboristequipment"]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{{ site.title }}",
+  "url": "{{ site.url }}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ site.url }}/products/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{ site.title }}",
+  "description": {{ site.description | strip_newlines | strip | jsonify }},
+  "url": "{{ site.url }}",
+  "email": "{{ site.email }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ site.address[0].street }}",
+    "addressLocality": "{{ site.address[1].city }}",
+    "addressRegion": "{{ site.address[2].state }}",
+    "addressCountry": "US"
+  }
+}
+</script>

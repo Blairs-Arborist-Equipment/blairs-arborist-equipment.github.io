@@ -6,3 +6,4 @@ vendor/
 .env
 .venv
 .jekyll-metadata
+.jekyll-cache/

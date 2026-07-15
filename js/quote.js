@@ -1,20 +1,35 @@
 ---
 ---
 
-$(function () {
-  $('[data-toggle="popover"]').popover()
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Bootstrap Popovers
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+  [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+
   quoteBadge();
-})
+});
 
 //------------------------------------------------------------------------------
 // add new item to the quote
 function saveItem(category, product) {
-  var sku = $("#sku-" + product + " option:selected").text();
-  var name = $("#name-" + product).text();
-  var key = sku + "|!|" + product + "|!|" + name + "|!|" + category;
-  var val = 1;
+  const selectEl = document.getElementById("sku-" + product);
+  if (!selectEl) return;
+  const sku = selectEl.options[selectEl.selectedIndex].text;
+  const nameEl = document.getElementById("name-" + product);
+  const name = nameEl ? nameEl.textContent.trim() : "";
+  const key = sku + "|!|" + product + "|!|" + name + "|!|" + category;
+  const val = 1;
   localStorage.setItem("bae_" + btoa(key), val);
-  $("#btn-" + product).popover('show');
+
+  // Show popover notification
+  const buttonEl = document.getElementById("btn-" + product);
+  if (buttonEl) {
+    const popover = bootstrap.Popover.getInstance(buttonEl) || new bootstrap.Popover(buttonEl);
+    popover.show();
+    setTimeout(() => {
+      popover.hide();
+    }, 1500);
+  }
   quoteBadge();
 }
 
@@ -29,8 +44,8 @@ function removeItem(key) {
 //------------------------------------------------------------------------------
 // increase item quantity
 function increaseItem(key) {
-  var val = parseInt(localStorage.getItem("bae_" + key));
-  val += 1
+  let val = parseInt(localStorage.getItem("bae_" + key)) || 1;
+  val += 1;
   localStorage.setItem("bae_" + key, val);
   quoteShowAll();
   quoteBadge();
@@ -39,11 +54,11 @@ function increaseItem(key) {
 //------------------------------------------------------------------------------
 // decrease item quantity
 function decreaseItem(key) {
-  var val = parseInt(localStorage.getItem("bae_" + key));
-  if (val == 1) {
+  let val = parseInt(localStorage.getItem("bae_" + key)) || 1;
+  if (val === 1) {
     return;
   }
-  val -= 1
+  val -= 1;
   localStorage.setItem("bae_" + key, val);
   quoteShowAll();
   quoteBadge();
@@ -60,13 +75,14 @@ function emptyQuote() {
 //-------------------------------------------------------------------------------------
 // return total quote item quantity
 function totalQuantity() {
-  var count = 0
-  for (i = 0; i <= localStorage.length-1; i++) {
-    if (!localStorage.key(i).includes('bae_')) {
+  let count = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key.startsWith('bae_')) {
       continue;
     }
-    _key = atob(localStorage.key(i).replace('bae_', ''));
-    qty = parseInt(localStorage.getItem("bae_" + btoa(_key)));
+    const decodedKey = atob(key.replace('bae_', ''));
+    const qty = parseInt(localStorage.getItem(key)) || 0;
     count += qty;
   }
   return count;
@@ -74,13 +90,15 @@ function totalQuantity() {
 
 //-------------------------------------------------------------------------------------
 // display quote item count badge
-//
 function quoteBadge() {
-  count = totalQuantity();
-  if (count > 0) {
-    $('#nav-quote').html('Quote<span class="mx-1"></span><span class="badge badge-pill badge-warning">' + count + '</span>');
-  } else {
-    $('#nav-quote').html('Quote');
+  const count = totalQuantity();
+  const navQuote = document.getElementById('nav-quote');
+  if (navQuote) {
+    if (count > 0) {
+      navQuote.innerHTML = 'Quote<span class="mx-1"></span><span class="badge rounded-pill bg-warning text-dark">' + count + '</span>';
+    } else {
+      navQuote.innerHTML = 'Quote';
+    }
   }
 }
 
@@ -88,161 +106,235 @@ function quoteBadge() {
 // dynamically populate the table with shopping list items
 function quoteShowAll() {
   if (CheckBrowser()) {
-    var name = "";
-    var sku = "";
-    var qty = "";
-    var i = 0;
-    var list = "";
-    var item = "";
-    for (i = 0; i <= localStorage.length-1; i++) {
-      if (!localStorage.key(i).includes('bae_')) {
+    let name = "";
+    let sku = "";
+    let qty = 0;
+    let list = "";
+    const quoteFormClient = document.getElementById("quote-form-client");
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const storageKey = localStorage.key(i);
+      if (!storageKey.startsWith('bae_')) {
         continue;
       }
-      _key = atob(localStorage.key(i).replace('bae_', ''));
-      key = _key.split('|!|');
-      sku = key[0];
-      slug = key[1];
-      name = key[2];
-      category = key[3];
-      qty = parseInt(localStorage.getItem("bae_" + btoa(_key)));
-      item = qty + '|!|' + _key;
-      var decreaseButtonDisabled = "";
-      if (qty == 1) {
+      const rawKey = storageKey.replace('bae_', '');
+      const decodedKey = atob(rawKey);
+      const parts = decodedKey.split('|!|');
+      sku = parts[0];
+      const slug = parts[1];
+      name = parts[2];
+      const category = parts[3];
+      qty = parseInt(localStorage.getItem(storageKey)) || 1;
+      const item = qty + '|!|' + decodedKey;
+
+      let decreaseButtonDisabled = "";
+      if (qty === 1) {
         decreaseButtonDisabled = ' disabled aria-disabled="true"';
       }
+
       list += '<tr>'
         + '<th scope="row">'
         + '<div class="mb-4">'
         + '<input type="hidden" name="item-' + slug + '" value="' + btoa(item) + '" />'
-        + '<a href="/products/' + category + '.html#' + slug + '">' + name + '</a>'
+        + '<a href="/products/' + category + '.html#' + slug + '" class="text-wrap">' + name + '</a>'
         + '</div>'
-        + '<div class="btn-group mr-2" role="group">'
-        + '<button type="button" class="btn btn-sm btn-secondary"' + decreaseButtonDisabled + ' onclick="decreaseItem(' + "'" + btoa(_key) + "'" + ');"><i class="fas fa-minus"></i></button>'
-        + '<input type="text" class="form-control form-control-sm text-center" value="' + qty + '" size="1" />'
-        + '<button type="button" class="btn btn-sm btn-secondary" onclick="increaseItem(' + "'" + btoa(_key) + "'" + ');"><i class="fas fa-plus"></i></button>'
+        + '<div class="btn-group me-2" role="group">'
+        + '<button type="button" class="btn btn-sm btn-secondary"' + decreaseButtonDisabled + ' onclick="decreaseItem(' + "'" + rawKey + "'" + ');"><i class="fas fa-minus"></i></button>'
+        + '<input type="text" class="form-control form-control-sm text-center" value="' + qty + '" size="1" style="width: 40px; display: inline-block;" readonly />'
+        + '<button type="button" class="btn btn-sm btn-secondary" onclick="increaseItem(' + "'" + rawKey + "'" + ');"><i class="fas fa-plus"></i></button>'
         + '</div>'
-        + '<div class="btn-group mr-2" role="group">'
-        + '<button type="button" class="btn btn-sm btn-secondary" onclick="removeItem(' + "'" + btoa(_key) + "'" + ');"><i class="far fa-trash-alt"></i></button>'
+        + '<div class="btn-group me-2" role="group">'
+        + '<button type="button" class="btn btn-sm btn-secondary" onclick="removeItem(' + "'" + rawKey + "'" + ');"><i class="far fa-trash-alt"></i></button>'
         + '</div>'
         + '</th>'
         + '<td class="text-center">' + sku + '</td>'
         + '</tr>\n';
     }
-    // if no item exists in the quote
-    if (list == "") {
-      list += '<tr><th scope="row" class="text-center" colspan=4><i>No Items in Quote</i></th></tr>\n';
-      $("#quote-form-client").removeClass('visible');
-      $("#quote-form-client").addClass('invisible');
-    } else {
-      $("#quote-form-client").removeClass('invisible');
-      $("#quote-form-client").addClass('visible');
+
+    const tbody = document.querySelector("#quote-table tbody");
+    if (tbody) {
+      if (list === "") {
+        tbody.innerHTML = '<tr><th scope="row" class="text-center" colspan="2"><i>No Items in Quote</i></th></tr>\n';
+        if (quoteFormClient) {
+          quoteFormClient.classList.add('d-none');
+        }
+      } else {
+        tbody.innerHTML = list;
+        if (quoteFormClient) {
+          quoteFormClient.classList.remove('d-none');
+        }
+      }
     }
-    // bind the data to html table
-    $("#quote-table > tbody").html(list);
   } else {
-    error = '<tr><th scope="row" colspan=4>Cannot save shopping list. Your browser does not support HTML 5</th></tr>';
-    $("#quote-table > tbody").html(error);
+    const tbody = document.querySelector("#quote-table tbody");
+    if (tbody) {
+      tbody.innerHTML = '<tr><th scope="row" colspan="2">Cannot save shopping list. Your browser does not support HTML 5</th></tr>';
+    }
   }
 }
 
 //--------------------------------------------------------------------------------------
 // Checking browser support
-// this step may not be required as most of modern browsers do support HTML5
 function CheckBrowser() {
-  if ('localStorage' in window && window['localStorage'] !== null) {
-    // we can use localStorage object to store data
-    return true;
-  } else {
-    return false;
-  }
+  return ('localStorage' in window && window['localStorage'] !== null);
 }
 
 //--------------------------------------------------------------------------------------
 // Contact form handler
-$("#submit-contact").click(function(e) {
-  var valid = this.form.checkValidity();
-  if (valid) {
-    e.preventDefault();
-    $('#submit-contact').prop('value', 'Sending...').prop('disabled', true);
-    grecaptcha.ready(function() {
-      grecaptcha.execute('{{ site.recaptcha.site_key }}', {action: 'submit'}).then(function(token) {
-        payload = {
-          recaptcha: token,
-          name: $("#name").val(),
-          company: $("#company").val(),
-          email: $("#email").val(),
-          phone: $("#phone").val(),
-          message: $("#message").val(),
-          type: $(":hidden#form-type").val()
-        };
-        $.ajax({
-          type: "POST",
-          url: "{{ site.mailer.url }}",
-          data: JSON.stringify(payload),
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          success: function(data) {
-            $('#contact-form-div').hide();
-            $('#contact-form-success').removeClass('invisible');
-            $('#contact-form-success').addClass('visible');
-          },
-          error: function(data) {
-            $('#contact-form-div').hide();
-            $('#contact-form-error').removeClass('invisible');
-            $('#contact-form-error').addClass('visible');
+const submitContact = document.getElementById("submit-contact");
+if (submitContact) {
+  submitContact.addEventListener("click", function(e) {
+    const form = this.form;
+    const valid = form.checkValidity();
+    if (valid) {
+      e.preventDefault();
+      submitContact.value = "Sending...";
+      submitContact.disabled = true;
+
+      // Extract Turnstile Token
+      const token = typeof turnstile !== "undefined" ? turnstile.getResponse() : "";
+      if (!token) {
+        alert("Please complete the security check.");
+        submitContact.value = "Send";
+        submitContact.disabled = false;
+        return;
+      }
+
+      const payload = {
+        recaptcha: token,
+        'cf-turnstile-response': token,
+        name: document.getElementById("name").value,
+        company: document.getElementById("company").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        message: document.getElementById("message").value,
+        type: form.querySelector("#form-type").value
+      };
+
+      fetch("{{ site.mailer.url }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        const contactFormDiv = document.getElementById('contact-form-div');
+        if (contactFormDiv) contactFormDiv.style.display = 'none';
+
+        if (response.ok) {
+          const successDiv = document.getElementById('contact-form-success');
+          if (successDiv) {
+            successDiv.classList.remove('d-none');
           }
-        });
+        } else {
+          const errorDiv = document.getElementById('contact-form-error');
+          if (errorDiv) {
+            errorDiv.classList.remove('d-none');
+          }
+        }
+      })
+      .catch(() => {
+        const contactFormDiv = document.getElementById('contact-form-div');
+        if (contactFormDiv) contactFormDiv.style.display = 'none';
+        const errorDiv = document.getElementById('contact-form-error');
+        if (errorDiv) {
+          errorDiv.classList.remove('d-none');
+        }
+      })
+      .finally(() => {
+        if (typeof turnstile !== "undefined") {
+          turnstile.reset();
+        }
       });
-    });
-  } else {
-    this.form.reportValidity();
-  }
-});
+    } else {
+      form.reportValidity();
+    }
+  });
+}
 
 //--------------------------------------------------------------------------------------
 // Quote form handler
-$("#submit-quote").click(function(e) {
-  var valid = this.form.checkValidity();
-  if (valid) {
-    e.preventDefault();
-    $('#submit-quote').prop('value', 'Requesting...').prop('disabled', true);
-    grecaptcha.ready(function() {
-      grecaptcha.execute('{{ site.recaptcha.site_key }}', {action: 'submit'}).then(function(token) {
-        payload = {
-          recaptcha: token,
-          name: $("#name").val(),
-          company: $("#company").val(),
-          email: $("#email").val(),
-          phone: $("#phone").val(),
-          address: $("#address").val(),
-          address2: $("#address2").val(),
-          city: $("#city").val(),
-          state: $("#state").val(),
-          zip: $("#zip").val(),
-          items: $('input[name^="item-"]').map(function(idx, elem) { return $(elem).val(); }).get(),
-          type: $(":hidden#form-type").val()
-        };
-        $.ajax({
-          type: "POST",
-          url: "{{ site.mailer.url }}",
-          data: JSON.stringify(payload),
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          success: function(data) {
-            emptyQuote();
-            $('#quote-form-client').hide();
-            $('#quote-form-success').removeClass('invisible');
-            $('#quote-form-success').addClass('visible');
-          },
-          error: function(data) {
-            $('#quote-form-client').hide();
-            $('#quote-form-error').removeClass('invisible');
-            $('#quote-form-error').addClass('visible');
-          }
-        });
+const submitQuote = document.getElementById("submit-quote");
+if (submitQuote) {
+  submitQuote.addEventListener("click", function(e) {
+    const form = this.form;
+    const valid = form.checkValidity();
+    if (valid) {
+      e.preventDefault();
+      submitQuote.value = "Requesting...";
+      submitQuote.disabled = true;
+
+      // Extract Turnstile Token
+      const token = typeof turnstile !== "undefined" ? turnstile.getResponse() : "";
+      if (!token) {
+        alert("Please complete the security check.");
+        submitQuote.value = "Request a Quote";
+        submitQuote.disabled = false;
+        return;
+      }
+
+      // Gather quote items
+      const items = [];
+      form.querySelectorAll('input[name^="item-"]').forEach(elem => {
+        items.push(elem.value);
       });
-    });
-  } else {
-    this.form.reportValidity();
-  }
-});
+
+      const payload = {
+        recaptcha: token,
+        'cf-turnstile-response': token,
+        name: document.getElementById("name").value,
+        company: document.getElementById("company").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        address2: document.getElementById("address2").value,
+        city: document.getElementById("city").value,
+        state: document.getElementById("state").value,
+        zip: document.getElementById("zip").value,
+        items: items,
+        type: form.querySelector("#form-type").value
+      };
+
+      fetch("{{ site.mailer.url }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        const quoteFormClient = document.getElementById('quote-form-client');
+        if (quoteFormClient) quoteFormClient.style.display = 'none';
+
+        if (response.ok) {
+          emptyQuote();
+          const successDiv = document.getElementById('quote-form-success');
+          if (successDiv) {
+            successDiv.classList.remove('d-none');
+          }
+        } else {
+          const errorDiv = document.getElementById('quote-form-error');
+          if (errorDiv) {
+            errorDiv.classList.remove('d-none');
+          }
+        }
+      })
+      .catch(() => {
+        const quoteFormClient = document.getElementById('quote-form-client');
+        if (quoteFormClient) quoteFormClient.style.display = 'none';
+        const errorDiv = document.getElementById('quote-form-error');
+        if (errorDiv) {
+          errorDiv.classList.remove('d-none');
+        }
+      })
+      .finally(() => {
+        if (typeof turnstile !== "undefined") {
+          turnstile.reset();
+        }
+      });
+    } else {
+      form.reportValidity();
+    }
+  });
+}
