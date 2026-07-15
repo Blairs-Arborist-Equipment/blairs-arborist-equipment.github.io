@@ -211,50 +211,50 @@ hr.light {
   }
 }
 
-.nav-icons {
-  display: flex;
-  gap: 0.5rem;
+.nav-search-toggle,
+#theme-toggle-btn {
+  display: inline-flex !important;
   align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 !important;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .nav-search-toggle,
 #theme-toggle-btn {
-  min-width: 44px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-#theme-toggle-btn {
   color: var(--color-text-light);
 }
 
+.nav-search-toggle:hover,
 #theme-toggle-btn:hover {
   background-color: rgba(76, 175, 80, 0.15);
   color: var(--primary);
 }
 
 @media (prefers-color-scheme: light) {
+  .nav-search-toggle,
   #theme-toggle-btn {
     color: #333;
   }
 
+  .nav-search-toggle:hover,
   #theme-toggle-btn:hover {
     background-color: rgba(76, 175, 80, 0.1);
   }
 }
 
+:root[data-theme="light"] .nav-search-toggle,
 :root[data-theme="light"] #theme-toggle-btn {
   color: #333;
 }
 
+:root[data-theme="light"] .nav-search-toggle:hover,
 :root[data-theme="light"] #theme-toggle-btn:hover {
   background-color: rgba(76, 175, 80, 0.1);
 }
