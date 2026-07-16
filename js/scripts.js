@@ -1,63 +1,70 @@
 /*!
-    * Start Bootstrap - Creative v6.0.4 (https://startbootstrap.com/theme/creative)
-    * Copyright 2013-2020 Start Bootstrap
-    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-creative/blob/master/LICENSE)
-    */
-    (function($) {
-  "use strict"; // Start of use strict
+ * Start Bootstrap - Creative v6.0.4 (https://startbootstrap.com/theme/creative)
+ * Copyright 2013-2020 Start Bootstrap
+ * Ported to Vanilla JS for Bootstrap 5 by Antigravity (2026)
+ */
 
-  // Smooth scrolling using jQuery easing
-  $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
-    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-      if (target.length) {
-        $('html, body').animate({
-          scrollTop: (target.offset().top - 72)
-        }, 1000, "easeInOutExpo");
-        return false;
+document.addEventListener('DOMContentLoaded', () => {
+  "use strict";
+
+  // Smooth scroll for scroll-trigger links
+  document.querySelectorAll('a.js-scroll-trigger[href*="#"]:not([href="#"])').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const targetId = this.hash;
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        const headerOffset = 72;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
       }
-    }
+    });
   });
 
   // Closes responsive menu when a scroll trigger link is clicked
-  $('.js-scroll-trigger').click(function() {
-    $('.navbar-collapse').collapse('hide');
-  });
+  const navbarToggler = document.querySelector('.navbar-toggler');
+  const navbarCollapse = document.getElementById('navbarResponsive');
+  if (navbarCollapse && navbarToggler) {
+    const links = navbarCollapse.querySelectorAll('.js-scroll-trigger');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        // Only trigger collapse close if the toggler is visible (i.e. mobile view)
+        if (window.getComputedStyle(navbarToggler).display !== 'none') {
+          const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse);
+          bsCollapse.hide();
+        }
+      });
+    });
+  }
 
-  // Activate scrollspy to add active class to navbar items on scroll
-  $('body').scrollspy({
-    target: '#mainNav',
-    offset: 75
-  });
-
-  // Collapse Navbar
-  var navbarCollapse = function() {
-    if ($("#mainNav").offset().top > 100) {
-      $("#mainNav").addClass("navbar-scrolled");
+  // Collapse Navbar handler
+  const navbarShrink = () => {
+    const mainNav = document.body.querySelector('#mainNav');
+    if (!mainNav) return;
+    if (window.scrollY > 100) {
+      mainNav.classList.add('navbar-scrolled');
     } else {
-      $("#mainNav").removeClass("navbar-scrolled");
+      mainNav.classList.remove('navbar-scrolled');
     }
   };
-  // Collapse now if page is not at top
-  navbarCollapse();
-  // Collapse the navbar when page is scrolled
-  $(window).scroll(navbarCollapse);
 
-  // Magnific popup calls
-  $('#portfolio').magnificPopup({
-    delegate: 'a',
-    type: 'image',
-    tLoading: 'Loading image #%curr%...',
-    mainClass: 'mfp-img-mobile',
-    gallery: {
-      enabled: true,
-      navigateByImgClick: true,
-      preload: [0, 1]
-    },
-    image: {
-      tError: '<a href="%url%">The image #%curr%</a> could not be loaded.'
-    }
-  });
+  // Shrink now if page is not at top
+  navbarShrink();
 
-})(jQuery); // End of use strict
+  // Shrink the navbar when page is scrolled
+  document.addEventListener('scroll', navbarShrink);
+
+  // Initialize Bootstrap ScrollSpy
+  const mainNav = document.body.querySelector('#mainNav');
+  if (mainNav) {
+    new bootstrap.ScrollSpy(document.body, {
+      target: '#mainNav',
+      rootMargin: '0px 0px -40%'
+    });
+  }
+});

@@ -1,13 +1,14 @@
 <section class="page-section" id="categories">
   <div class="container">
-    <div class="row">
+    <h2 class="visually-hidden">Shop by Category</h2>
+    <div class="row g-4" role="list">
       {% for c in site.data.categories %}
         <div class="col-lg-3 col-md-4 col-sm-6 text-center">
-          <div class="card bg-light mb-4 category">
+          <div class="card category category-card" role="listitem">
             <a href="/products/{{ c.name | slugify }}.html" target="_self">
-            <img class="card-img-top" style="" src="{{ site.image.url }}/assets/categories/{{ c.name | slugify }}.jpg">
+            <img class="card-img-top" src="{{ site.image.url }}/assets/categories/{{ c.name | slugify }}.jpg" loading="lazy" alt="{{ c.name }}">
             <div class="card-body">
-              <h5 class="card-title align-middle" style="height: 1.5em;max-height: 2.5em;">{{ c.name }}</h5>
+              <h3 class="card-title align-middle" style="height: 1.5em;max-height: 2.5em;">{{ c.name }}</h3>
             </div>
             </a>
           </div>

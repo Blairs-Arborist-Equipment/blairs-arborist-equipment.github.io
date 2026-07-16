@@ -1,41 +1,76 @@
+.PHONY: prereqs mise bundle pipenv init lint test build serve clean clean-all csv csv-commit toolbox-setup toolbox-shell
+
+TOOLBOX_CONTAINER ?= blairs-arborist
+
+# One-time setup: create the toolbox container (atomic OS users)
+# On traditional RHEL/Fedora, install system libraries directly instead.
+toolbox-setup:
+	@if command -v toolbox &> /dev/null; then \
+		echo "Creating toolbox container '$(TOOLBOX_CONTAINER)'..."; \
+		toolbox create --assumeyes -c $(TOOLBOX_CONTAINER) 2>/dev/null || echo "Container already exists."; \
+		echo "Installing prerequisites inside toolbox..."; \
+		toolbox run -c $(TOOLBOX_CONTAINER) sudo yum install -y wget curl zip dos2unix gcc gcc-c++ make patch \
+			openssl-devel readline-devel libyaml-devel zlib-devel \
+			libffi-devel gdbm-devel ncurses-devel rpm-build redhat-rpm-config; \
+	else \
+		echo "toolbox not found. On traditional RHEL/Fedora, run: make prereqs"; \
+		exit 1; \
+	fi
+
+# Open an interactive shell in the toolbox container
+toolbox-shell:
+	@if command -v toolbox &> /dev/null; then \
+		toolbox run -c $(TOOLBOX_CONTAINER) bash; \
+	else \
+		echo "toolbox not found. Falling back to host shell."; \
+		bash; \
+	fi
+
+# One-time OS-level setup for traditional RHEL/Fedora machines (non-atomic).
+# ruby-build (mise's ruby backend) needs to compile Ruby from source.
+# Requires sudo, so it's intentionally NOT part of `init` — run it once
+# per fresh machine before `make init`.
 prereqs:
-	sudo yum install -y wget curl zip python-pip gcc zlib-devel libxml2 libxslt rpm-build gcc-c++ libffi-devel redhat-rpm-config
+	@echo "Note: On atomic OS, use 'make toolbox-setup' instead."
+	sudo yum install -y wget curl zip dos2unix gcc gcc-c++ make patch \
+		openssl-devel readline-devel libyaml-devel zlib-devel \
+		libffi-devel gdbm-devel ncurses-devel rpm-build redhat-rpm-config
 
-rvm:
-	echo "Installing rvm..."
-	gpg2 --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-	\curl -sSL https://get.rvm.io | bash -s stable
+mise:
+	echo "Installing pinned Ruby/Python via mise..."
+	mise install
 
-ruby:
-	echo "Installing ruby..."
-	rvm install 2.7.2
-	# NOTE: rvm use not working
-	rvm alias create default 2.7.2
-	$(rvm 2.7.2 do rvm env --path)
-	ruby --version
+bundle: mise
+	echo "Installing Ruby gems..."
+	bundle config set --local path 'vendor/bundle'
+	bundle install
 
-gem: ruby
-	echo "Installing bundler..."
-	gem install bundle bundler
-
-bundle: gem
-	echo "Installing bundle..."
-	bundle install --full-index --path vendor/bundle
-
-pipenv:
-	echo "Create pipenv environment"
+pipenv: mise
+	echo "Creating pipenv environment..."
 	pipenv install -d
 
-init: rvm ruby gem bundle pipenv
-	echo "Initializing..."
+init: mise bundle pipenv
+	echo "Environment initialized."
 
 lint:
 	echo "Linting..."
 	pipenv run yamllint _data/
 
+build:
+	echo "Building..."
+	bundle exec jekyll build
+
+test: lint build
+	echo "Checking for broken internal links/images..."
+	bundle exec htmlproofer ./_site --disable-external
+
+serve:
+	echo "Starting server..."
+	bundle exec jekyll serve --host 0.0.0.0 --port 8080
+
 clean:
 	echo "Cleaning..."
-	rm -rf build/ _site/
+	rm -rf _site/ .jekyll-cache/ .jekyll-metadata
 
 clean-all: clean
 	echo "Cleaning..."
@@ -54,12 +89,3 @@ csv-commit: csv
 	git add $(CSV)
 	git commit -m 'updated inventory'
 	git push origin main
-
-build:
-	echo "Building..."
-	mkdir -p build/
-	bundle exec jekyll build
-
-serve:
-	echo "Starting server..."
-	bundle exec jekyll serve --host 0.0.0.0 --port 8080

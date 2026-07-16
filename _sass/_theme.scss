@@ -1,0 +1,187 @@
+@charset "UTF-8";
+
+/* Modern Dark + Nature-Inspired Theme */
+
+:root {
+  /* Colors */
+  --bs-primary: #4CAF50;
+  --bs-primary-rgb: 76, 175, 80;
+  --bs-secondary: #1a1a1a;
+  --bs-secondary-rgb: 26, 26, 26;
+  --primary: var(--bs-primary);
+  --secondary: var(--bs-secondary);
+  --color-dark-bg: #0f1419;
+  --color-card-bg: #1a2332;
+  --color-text-light: #f0f0f0;
+  --color-text-muted: #a0a0a0;
+  --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bs-body-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bs-focus-ring-color: rgba(76, 175, 80, 0.5);
+
+  /* Spacing scale — 4px/8px baseline */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  /* Type scale — bigger, bolder */
+  --font-size-h1: 3.5rem;
+  --font-size-h2: 2.5rem;
+  --font-size-h3: 1.8rem;
+  --font-size-h4: 1.3rem;
+  --font-size-h5: 1.1rem;
+  --font-size-body: 1rem;
+  --font-size-small: 0.875rem;
+  --line-height-heading: 1.1;
+  --line-height-body: 1.6;
+
+  /* Shadows */
+  --elevation-0: none;
+  --elevation-1: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --elevation-2: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --elevation-3: 0 16px 32px rgba(0, 0, 0, 0.5);
+  --elevation-4: 0 24px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* Light mode (default or explicitly set) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-dark-bg: #ffffff;
+    --color-card-bg: #f8f9fa;
+    --color-text-light: #1a1a1a;
+    --color-text-muted: #666666;
+  }
+}
+
+/* Dark mode (user preference or explicitly set) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-dark-bg: #0f1419;
+    --color-card-bg: #1a2332;
+    --color-text-light: #f0f0f0;
+    --color-text-muted: #a0a0a0;
+  }
+}
+
+/* Manual theme override */
+:root[data-theme="light"] {
+  --color-dark-bg: #ffffff;
+  --color-card-bg: #f8f9fa;
+  --color-text-light: #1a1a1a;
+  --color-text-muted: #666666;
+}
+
+:root[data-theme="dark"] {
+  --color-dark-bg: #0f1419;
+  --color-card-bg: #1a2332;
+  --color-text-light: #f0f0f0;
+  --color-text-muted: #a0a0a0;
+}
+
+/* Apply theme to body */
+body {
+  background-color: var(--color-dark-bg);
+  color: var(--color-text-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html {
+  background-color: var(--color-dark-bg);
+}
+
+/* Primary button theming */
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #228B22;
+  --bs-btn-border-color: #228B22;
+  --bs-btn-hover-bg: #1B6B1B;
+  --bs-btn-hover-border-color: #1B6B1B;
+  --bs-btn-active-bg: #1B6B1B;
+  --bs-btn-active-border-color: #1B6B1B;
+  --bs-btn-focus-shadow-rgb: 34, 139, 34;
+  --bs-btn-disabled-bg: #228B22;
+  --bs-btn-disabled-border-color: #228B22;
+}
+
+/* Secondary button theming */
+.btn-secondary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #5C4D42;
+  --bs-btn-border-color: #5C4D42;
+  --bs-btn-hover-bg: #453B33;
+  --bs-btn-hover-border-color: #453B33;
+  --bs-btn-active-bg: #453B33;
+  --bs-btn-active-border-color: #453B33;
+  --bs-btn-focus-shadow-rgb: 92, 77, 66;
+  --bs-btn-disabled-bg: #5C4D42;
+  --bs-btn-disabled-border-color: #5C4D42;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: #5C4D42;
+  --bs-btn-border-color: #5C4D42;
+  --bs-btn-hover-bg: #5C4D42;
+  --bs-btn-hover-border-color: #5C4D42;
+  --bs-btn-active-bg: #5C4D42;
+  --bs-btn-active-border-color: #5C4D42;
+  --bs-btn-focus-shadow-rgb: 92, 77, 66;
+}
+
+/* Utility color classes */
+.bg-primary {
+  background-color: #228B22 !important;
+}
+
+.text-primary {
+  color: #228B22 !important;
+}
+
+.border-primary {
+  border-color: #228B22 !important;
+}
+
+/* Modern button enhancements */
+.btn-primary {
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 139, 34, 0.3);
+}
+
+.btn-outline-secondary {
+  border-radius: 6px;
+  font-weight: 500;
+  border-width: 1.5px;
+}
+
+.btn-outline-secondary:hover {
+  transform: translateY(-1px);
+}
+
+/* Earth-tone accent badge */
+.badge-earth {
+  background-color: #C9A66B;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+}
+
+/* Page section refinement */
+.page-section {
+  padding: 5rem 0;
+}
+
+@media (max-width: 768px) {
+  .page-section {
+    padding: 3rem 0;
+  }
+}

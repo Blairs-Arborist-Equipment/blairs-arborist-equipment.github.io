@@ -1,0 +1,73 @@
+<section class="page-section" id="search">
+  <div class="container">
+    <div class="row mb-4 g-3">
+      <div class="col-md-6">
+        <input type="text" id="product-search-input" class="form-control" placeholder="Search by name, description, or SKU…" aria-label="Search products">
+      </div>
+      <div class="col-md-6">
+        <select id="product-search-category" class="form-select" aria-label="Filter by category">
+          <option value="">All Categories</option>
+          {% for c in site.data.categories %}
+            <option value="{{ c.name }}">{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <h2 class="visually-hidden">Product Catalog</h2>
+
+    <div class="products-container" id="products-container" role="list">
+      {% for p in site.data.products %}
+      {% assign images = p.images | split: "|" %}
+      {% assign skus = p.skus | split: ";" %}
+      {% assign tags = p.category | split: "|" %}
+      {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      {% assign top-category-names = site.data.categories | map: "name" %}
+      {% assign category-segments = p.category | split: "|" %}
+      {% assign product-top-category = category-segments[0] | strip %}
+      {% if top-category-names contains product-top-category or product-top-category == "Uncategorized" %}
+        {% capture product-href %}/products/{{ product-top-category | slugify }}.html#{{ product-slug }}{% endcapture %}
+      {% else %}
+        {% capture product-href %}/products/#{{ product-slug }}{% endcapture %}
+      {% endif %}
+      <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-category="{{ p.category | escape }}" data-skus="{{ p.skus | escape }}">
+        {% include product-image.html
+           product-slug=product-slug
+           product-name=p.name
+           images=images
+        %}
+        <div class="card-body">
+          <h3 class="card-title" id="name-{{ product-slug }}">
+            <a href="{{ product-href }}" class="text-wrap">{{ p.name }}</a>
+          </h3>
+          <div class="card-text description-content">{{ p.description }}</div>
+          <p class="card-text">
+          {% for tag in tags %}
+            <span class="badge rounded-pill badge-earth text-dark">{{ tag }}</span>
+          {% endfor %}
+          </p>
+          <div class="input-group input-group-sm">
+            <select class="form-select" id="sku-{{ product-slug }}">
+              {% for sku in skus %}
+                <option value="{{ sku }}">{{ sku }}</option>
+              {% endfor %}
+            </select>
+            <button id="btn-{{ product-slug }}" class="btn btn-outline-secondary btn-add-to-quote" data-bs-toggle="popover" data-bs-content="Added" data-bs-trigger="focus" type="button" onclick="saveItem('', '{{ product-slug }}')">Add to Quote</button>
+          </div>
+        </div>
+      </div>
+      {% include product-lightbox.html
+         product-slug=product-slug
+         product-name=p.name
+         images=images
+      %}
+      {% endfor %}
+    </div>
+
+    <div id="search-result-count" class="text-muted my-3" aria-live="polite"></div>
+
+    <div id="search-no-results" class="d-none text-center py-5" aria-live="polite">
+      <p class="text-muted">No products found matching your search.</p>
+    </div>
+  </div>
+</section>
