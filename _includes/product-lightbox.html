@@ -1,0 +1,67 @@
+{% comment %}
+  Uncropped "view full size" lightbox modal for a product's images.
+  Must be rendered as a SIBLING after the enclosing .card, not nested
+  inside it — .products-container .card:hover sets a transform, which
+  becomes the containing block for this modal's fixed positioning and
+  can clip/mis-position it if nested inside an overflow:hidden card.
+
+  Required params: product-slug, product-name, images (already-split array)
+{% endcomment %}
+{% assign images = include.images %}
+{% if images.size > 0 %}
+<div class="modal fade product-lightbox" id="modal-{{ include.product-slug }}" tabindex="-1" aria-labelledby="modal-label-{{ include.product-slug }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-label-{{ include.product-slug }}">{{ include.product-name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if images.size == 1 %}
+          <picture>
+            <source srcset="{{ images[0] | replace: '.jpg', '.webp' }}" type="image/webp">
+            <source srcset="{{ images[0] }}" type="image/jpeg">
+            <img src="{{ images[0] }}" loading="lazy" alt="{{ include.product-name }}">
+          </picture>
+        {% else %}
+          <div id="modal-carousel-{{ include.product-slug }}" class="carousel slide">
+            <div class="carousel-indicators">
+              {% for image in images %}
+                {% if forloop.first %}
+                  <button type="button" data-bs-target="#modal-carousel-{{ include.product-slug }}" data-bs-slide-to="{{ forloop.index0 }}" class="active" aria-current="true" aria-label="Slide {{ forloop.index }}"></button>
+                {% else %}
+                  <button type="button" data-bs-target="#modal-carousel-{{ include.product-slug }}" data-bs-slide-to="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="carousel-inner">
+              {% for image in images %}
+                {% if forloop.first %}
+                  {% assign active = 'active' %}
+                {% else %}
+                  {% assign active = '' %}
+                {% endif %}
+                <div class="carousel-item {{ active }}">
+                  <picture>
+                    <source srcset="{{ image | replace: '.jpg', '.webp' }}" type="image/webp">
+                    <source srcset="{{ image }}" type="image/jpeg">
+                    <img src="{{ image }}" loading="lazy" alt="{{ include.product-name }} – image {{ forloop.index }}">
+                  </picture>
+                </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#modal-carousel-{{ include.product-slug }}" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#modal-carousel-{{ include.product-slug }}" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

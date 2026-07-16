@@ -22,17 +22,23 @@
       {% assign skus = p.skus | split: ";" %}
       {% assign tags = p.category | split: "|" %}
       {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      {% assign top-category-names = site.data.categories | map: "name" %}
+      {% assign category-segments = p.category | split: "|" %}
+      {% assign product-top-category = category-segments[0] | strip %}
+      {% if top-category-names contains product-top-category or product-top-category == "Uncategorized" %}
+        {% capture product-href %}/products/{{ product-top-category | slugify }}.html#{{ product-slug }}{% endcapture %}
+      {% else %}
+        {% capture product-href %}/products/#{{ product-slug }}{% endcapture %}
+      {% endif %}
       <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-category="{{ p.category | escape }}" data-skus="{{ p.skus | escape }}">
-        {% if images.size > 0 %}
-          <picture>
-            <source srcset="{{ images[0] | replace: '.jpg', '.webp' }}" type="image/webp">
-            <source srcset="{{ images[0] }}" type="image/jpeg">
-            <img src="{{ images[0] }}" class="card-img-top" loading="lazy" alt="{{ p.name }}">
-          </picture>
-        {% endif %}
+        {% include product-image.html
+           product-slug=product-slug
+           product-name=p.name
+           images=images
+        %}
         <div class="card-body">
           <h3 class="card-title" id="name-{{ product-slug }}">
-            <a href="{{ p.url }}" class="text-wrap">{{ p.name }}</a>
+            <a href="{{ product-href }}" class="text-wrap">{{ p.name }}</a>
           </h3>
           <div class="card-text description-content">{{ p.description }}</div>
           <p class="card-text">
@@ -50,6 +56,11 @@
           </div>
         </div>
       </div>
+      {% include product-lightbox.html
+         product-slug=product-slug
+         product-name=p.name
+         images=images
+      %}
       {% endfor %}
     </div>
 

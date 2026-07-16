@@ -15,64 +15,20 @@
       {% assign skus = p.skus | split: ";" %}
       {% assign tags = p.category | replace: page.title, "" | split: "|" %}
       {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      {% assign images = p.images | split: "|" %}
+      {% capture fallback-webp %}{{ site.image.url }}/assets/products/{{ category-slug }}.webp{% endcapture %}
+      {% capture fallback-jpg %}{{ site.image.url }}/assets/products/{{ category-slug }}.jpg{% endcapture %}
       <!-- Start -->
       <div class="card mb-3" style="max-width: 100%;" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-skus="{{ p.skus | escape }}">
         <div class="row g-0">
           <div class="col-md-4" style="max-height:640px;overflow:hidden;">
-            {% if p.images %}
-              {% assign images = p.images | split: "|" %}
-              {% if images.size == 1 %}
-                <div>
-                  <picture>
-                    <source srcset="{{ images[0] | replace: ".jpg", ".webp" }}" type="image/webp">
-                    <source srcset="{{ images[0] }}" type="image/jpeg">
-                    <img src="{{ images[0] }}" class="img-fluid d-block w-100" loading="lazy" alt="{{ p.name }}">
-                  </picture>
-                </div>
-              {% else %}
-                <div id="carousel-{{ product-slug }}" class="carousel slide" data-bs-ride="carousel">
-                  <div class="carousel-indicators">
-                    {% for image in images %}
-                      {% if forloop.first %}
-                        <button type="button" data-bs-target="#carousel-{{ product-slug }}" data-bs-slide-to="{{ forloop.index0 }}" class="active" aria-current="true" aria-label="Slide {{ forloop.index }}"></button>
-                      {% else %}
-                        <button type="button" data-bs-target="#carousel-{{ product-slug }}" data-bs-slide-to="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                  <div class="carousel-inner">
-                    {% for image in images %}
-                      {% if forloop.first %}
-                        {% assign active = 'active' %}
-                      {% else %}
-                        {% assign active = '' %}
-                      {% endif %}
-                        <div class="carousel-item {{ active }}">
-                          <picture>
-                            <source srcset="{{ image | replace: ".jpg", ".webp" }}" type="image/webp">
-                            <source srcset="{{ image }}" type="image/jpeg">
-                            <img src="{{ image }}" class="img-fluid d-block w-100" loading="lazy" alt="{{ p.name }} – image {{ forloop.index }}">
-                          </picture>
-                        </div>
-                    {% endfor %}
-                  </div>
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ product-slug }}" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                  </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ product-slug }}" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                  </button>
-                </div>
-              {% endif%}
-            {% else %}
-              <picture>
-                <source srcset="{{ site.image.url }}/assets/products/{{ category_slug }}.webp" type="image/webp">
-                <source srcset="{{ site.image.url }}/assets/products/{{ category_slug }}.jpg" type="image/jpeg">
-                <img src="{{ site.image.url }}/assets/products/{{ category_slug }}.jpg" style="max-width: 100%;" loading="lazy" alt="{{ page.title }}">
-              </picture>
-            {% endif %}
+            {% include product-image.html
+               product-slug=product-slug
+               product-name=p.name
+               images=images
+               fallback-webp=fallback-webp
+               fallback-jpg=fallback-jpg
+            %}
           </div>
           <div class="col-md-8">
             <div class="card-body">
@@ -97,6 +53,11 @@
           </div>
         </div>
       </div>
+      {% include product-lightbox.html
+         product-slug=product-slug
+         product-name=p.name
+         images=images
+      %}
       <!-- Schema: Product -->
       <script type="application/ld+json">
       {
