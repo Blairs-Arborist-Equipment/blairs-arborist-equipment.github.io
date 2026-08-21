@@ -1,5 +1,6 @@
----
----
+// Mailer endpoint is injected by _includes/scripts.html so this file can
+// stay plain JavaScript rather than a Liquid-templated asset.
+const MAILER_URL = (window.BAE_CONFIG && window.BAE_CONFIG.mailerUrl) || '';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Bootstrap Popovers
@@ -281,7 +282,7 @@ if (submitContact) {
         type: form.querySelector("#form-type").value
       };
 
-      fetch("{{ site.mailer.url }}", {
+      fetch(MAILER_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=utf-8"
@@ -372,7 +373,7 @@ if (submitQuote) {
         type: form.querySelector("#form-type").value
       };
 
-      fetch("{{ site.mailer.url }}", {
+      fetch(MAILER_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=utf-8"

@@ -1,6 +1,3 @@
----
----
-
 document.addEventListener('DOMContentLoaded', () => {
   // Wrap embedded description tables in responsive div
   wrapDescriptionTables();

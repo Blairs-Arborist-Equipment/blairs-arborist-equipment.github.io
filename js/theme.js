@@ -1,6 +1,3 @@
----
----
-
 // Theme toggle with system preference detection
 (function() {
   const THEME_KEY = 'site-theme';
