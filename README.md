@@ -4,7 +4,7 @@ This is the repository for the Blair's Arborist Equipment static website (hosted
 
 ## Technology Stack
 
-- **Jekyll** 3.9.0 (Liquid templating and static site generation)
+- **Jekyll** 3.10.0 (Liquid templating and static site generation)
 - **Bootstrap** 5.3.8 (responsive UI layout and styles via CDN)
 - **Vanilla JavaScript (ES6)** (shopping/quote cart, interactive forms, no jQuery dependencies)
 - **Cloudflare Turnstile** (invisible spam prevention widget)
@@ -18,7 +18,7 @@ This is the repository for the Blair's Arborist Equipment static website (hosted
 ```
 ├── _config.yml         # Jekyll settings, Turnstile site key, mailer url
 ├── _data/
-│   ├── categories.yml  # Product categories hierarchy
+│   ├── categories.yml  # Flat list of top-level product categories
 │   └── products.csv    # Inventory items (downloaded via make csv)
 ├── _includes/          # Reusable component HTML fragments
 │   ├── contact.html    # Balanced email/facebook footer contact columns

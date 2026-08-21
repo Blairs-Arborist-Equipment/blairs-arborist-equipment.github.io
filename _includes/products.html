@@ -10,21 +10,40 @@
     </div>
 
       <div class="products-container" id="products-container" role="list">
+      {% assign seen-slugs = "" %}
       {% for p in site.data.products %}
       {% if p.category contains page.title %}
       {% assign skus = p.skus | split: ";" %}
       {% assign tags = p.category | replace: page.title, "" | split: "|" %}
-      {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      {%- comment -%}
+        The source spreadsheet stores some names with raw HTML entities.
+        Decode them once so display, attributes, slugs and JSON-LD all agree.
+      {%- endcomment -%}
+      {% assign product-name = p.name | replace: '&#8211;', '–' | replace: '&#8243;', '″' | strip %}
+      {%- comment -%}
+        Duplicate product names would otherwise emit duplicate element ids,
+        making getElementById add the wrong SKU. Suffix repeats only, so
+        existing anchors for unique products keep working. Also cap length —
+        one row has a full description sitting in the name column.
+      {%- endcomment -%}
+      {% assign base-slug = product-name | slugify | truncate: 80, "" %}
+      {% capture slug-probe %}|{{ base-slug }}|{% endcapture %}
+      {% if seen-slugs contains slug-probe %}
+        {% capture product-slug %}{{ base-slug }}-{{ forloop.index }}{% endcapture %}
+      {% else %}
+        {% assign product-slug = base-slug %}
+      {% endif %}
+      {% assign seen-slugs = seen-slugs | append: slug-probe %}
       {% assign images = p.images | split: "|" %}
       {% capture fallback-webp %}{{ site.image.url }}/assets/products/{{ category-slug }}.webp{% endcapture %}
       {% capture fallback-jpg %}{{ site.image.url }}/assets/products/{{ category-slug }}.jpg{% endcapture %}
       <!-- Start -->
-      <div class="card mb-3" style="max-width: 100%;" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-skus="{{ p.skus | escape }}">
+      <div class="card mb-3" style="max-width: 100%;" id="{{ product-slug }}" role="listitem" data-name="{{ product-name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-category="{{ p.category | escape }}" data-skus="{{ p.skus | escape }}">
         <div class="row g-0">
           <div class="col-md-4" style="max-height:640px;overflow:hidden;">
             {% include product-image.html
                product-slug=product-slug
-               product-name=p.name
+               product-name=product-name
                images=images
                fallback-webp=fallback-webp
                fallback-jpg=fallback-jpg
@@ -33,51 +52,63 @@
           <div class="col-md-8">
             <div class="card-body">
               <h3 class="card-title" id="name-{{ product-slug }}">
-                <a href="{{ page.url }}#{{ product-slug }}">{{ p.name }}</a>
+                <a href="{{ page.url }}#{{ product-slug }}">{{ product-name | escape }}</a>
               </h3>
               <div class="card-text description-content">{{ p.description }}</div>
               <p class="card-text">
               {% for tag in tags %}
-                <span class="badge rounded-pill badge-earth text-dark">{{ tag }}</span>
+                {% assign tag-label = tag | strip %}
+                {% if tag-label != "" %}
+                <span class="badge rounded-pill badge-earth text-dark">{{ tag-label | escape }}</span>
+                {% endif %}
               {% endfor %}
               </p>
+              {%- comment -%}
+                Without a SKU there is nothing to add, and an empty dropdown
+                made "Add to Quote" throw. Say so instead of offering it.
+                (Avoid writing literal HTML tags in this comment: analyzers
+                that do not parse Liquid read them as real elements.)
+              {%- endcomment -%}
+              {% if skus.size > 0 %}
+              <label class="visually-hidden" for="sku-{{ product-slug }}">Select a SKU for {{ product-name | escape }}</label>
               <div class="input-group input-group-sm">
                 <select class="form-select" id="sku-{{ product-slug }}">
                   {% for sku in skus %}
-                    <option value="{{ sku }}">{{ sku }}</option>
+                    <option value="{{ sku | escape }}">{{ sku | escape }}</option>
                   {% endfor %}
                 </select>
                 <button id="btn-{{ product-slug }}" class="btn btn-outline-secondary btn-add-to-quote" data-bs-toggle="popover" data-bs-content="Added" data-bs-trigger="focus" type="button" onclick="saveItem('{{ category-slug }}', '{{ product-slug }}')">Add to Quote</button>
               </div>
+              {% else %}
+              <p class="card-text"><small class="text-muted">Contact us for availability on this item.</small></p>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
       {% include product-lightbox.html
          product-slug=product-slug
-         product-name=p.name
+         product-name=product-name
          images=images
       %}
+      {%- comment -%}
+        No `offers` block: this is a quote-request catalogue with no published
+        prices, and an Offer without `price` is invalid structured data.
+      {%- endcomment -%}
       <!-- Schema: Product -->
       <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": {{ p.name | jsonify }},
+        "name": {{ product-name | jsonify }},
         "description": {{ p.description | strip_html | strip_newlines | jsonify }},
-        "sku": {{ skus[0] | jsonify }},
-        "category": {{ page.title | jsonify }},
-        "url": "{{ site.url }}{{ page.url }}#{{ product-slug }}",
-        "offers": {
-          "@type": "Offer",
-          "url": "{{ site.url }}{{ page.url }}#{{ product-slug }}",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "seller": {
-            "@type": "Organization",
-            "name": "{{ site.title }}"
-          }
-        }
+        {% if skus.size > 0 %}"sku": {{ skus[0] | strip | jsonify }},
+        {% endif %}"category": {{ page.title | jsonify }},
+        "brand": {
+          "@type": "Brand",
+          "name": {{ site.title | jsonify }}
+        },
+        "url": "{{ site.url }}{{ page.url }}#{{ product-slug }}"
       }
       </script>
       <!-- End -->

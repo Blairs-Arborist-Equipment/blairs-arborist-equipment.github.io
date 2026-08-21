@@ -13,7 +13,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-label-{{ include.product-slug }}">{{ include.product-name }}</h5>
+        <h5 class="modal-title" id="modal-label-{{ include.product-slug }}">{{ include.product-name | escape }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -21,7 +21,7 @@
           <picture>
             <source srcset="{{ images[0] | replace: '.jpg', '.webp' }}" type="image/webp">
             <source srcset="{{ images[0] }}" type="image/jpeg">
-            <img src="{{ images[0] }}" loading="lazy" alt="{{ include.product-name }}">
+            <img src="{{ images[0] }}" loading="lazy" alt="{{ include.product-name | escape }}">
           </picture>
         {% else %}
           <div id="modal-carousel-{{ include.product-slug }}" class="carousel slide">
@@ -45,7 +45,7 @@
                   <picture>
                     <source srcset="{{ image | replace: '.jpg', '.webp' }}" type="image/webp">
                     <source srcset="{{ image }}" type="image/jpeg">
-                    <img src="{{ image }}" loading="lazy" alt="{{ include.product-name }} – image {{ forloop.index }}">
+                    <img src="{{ image }}" loading="lazy" alt="{{ include.product-name | escape }} – image {{ forloop.index }}">
                   </picture>
                 </div>
               {% endfor %}

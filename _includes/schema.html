@@ -1,10 +1,24 @@
+{%- comment -%}
+  Site-wide structured data. LocalBusiness is a subtype of Organization, so
+  the business is described once under a stable @id and referenced elsewhere
+  rather than emitted twice as two competing entities.
+{%- endcomment -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "{{ site.title }}",
-  "url": "{{ site.url }}",
-  "email": "{{ site.email }}",
+  "@type": "LocalBusiness",
+  "@id": {{ site.url | append: "/#organization" | jsonify }},
+  "name": {{ site.title | jsonify }},
+  "description": {{ site.description | strip_newlines | strip | jsonify }},
+  "url": {{ site.url | jsonify }},
+  "email": {{ site.email | jsonify }},
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": {{ site.address[0].street | jsonify }},
+    "addressLocality": {{ site.address[1].city | jsonify }},
+    "addressRegion": {{ site.address[2].state | jsonify }},
+    "addressCountry": "US"
+  },
   "sameAs": ["https://www.facebook.com/blairsarboristequipment"]
 }
 </script>
@@ -13,30 +27,17 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "{{ site.title }}",
-  "url": "{{ site.url }}",
+  "@id": {{ site.url | append: "/#website" | jsonify }},
+  "name": {{ site.title | jsonify }},
+  "url": {{ site.url | jsonify }},
+  "publisher": { "@id": {{ site.url | append: "/#organization" | jsonify }} },
+  {%- comment -%} Captured, not inlined: the {search_term_string} braces would
+    otherwise terminate the Liquid output tag early. {%- endcomment -%}
+  {%- capture search_target -%}{{ site.url }}/products/?q={search_term_string}{%- endcapture -%}
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "{{ site.url }}/products/?q={search_term_string}",
+    "target": {{ search_target | jsonify }},
     "query-input": "required name=search_term_string"
-  }
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "{{ site.title }}",
-  "description": {{ site.description | strip_newlines | strip | jsonify }},
-  "url": "{{ site.url }}",
-  "email": "{{ site.email }}",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "{{ site.address[0].street }}",
-    "addressLocality": "{{ site.address[1].city }}",
-    "addressRegion": "{{ site.address[2].state }}",
-    "addressCountry": "US"
   }
 }
 </script>

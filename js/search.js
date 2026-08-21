@@ -1,11 +1,20 @@
----
----
-
 document.addEventListener('DOMContentLoaded', () => {
+  applyQueryFromUrl();
   initSearchHandlers();
   // Initial render to show all products and count
   renderResults();
 });
+
+// Seed the search box from ?q=, which the WebSite SearchAction in
+// _includes/schema.html advertises to search engines.
+function applyQueryFromUrl() {
+  const searchInput = document.getElementById('product-search-input');
+  if (!searchInput) return;
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (q) {
+    searchInput.value = q;
+  }
+}
 
 function initSearchHandlers() {
   const searchInput = document.getElementById('product-search-input');
@@ -36,7 +45,7 @@ function renderResults() {
 
   if (!container) return;
 
-  const query = (searchInput?.value || '').toLowerCase();
+  const query = (searchInput?.value || '').trim().toLowerCase();
   const selectedCategory = categorySelect?.value || '';
 
   // Get all product cards
@@ -44,15 +53,15 @@ function renderResults() {
   let visibleCount = 0;
 
   cards.forEach(card => {
-    const name = card.getAttribute('data-name') || '';
-    const description = card.getAttribute('data-description') || '';
-    const category = card.getAttribute('data-category') || '';
-    const skus = card.getAttribute('data-skus') || '';
+    const name = card.dataset.name || '';
+    const description = card.dataset.description || '';
+    const category = card.dataset.category || '';
+    const skus = card.dataset.skus || '';
 
     // Category filter
     let matchesCategory = true;
     if (selectedCategory) {
-      const categoryTags = category.split('|');
+      const categoryTags = category.split('|').map(tag => tag.trim());
       matchesCategory = categoryTags.includes(selectedCategory);
     }
 
@@ -73,11 +82,12 @@ function renderResults() {
   });
 
   // Update result count and no-results message
-  if (visibleCount === 0) {
-    noResults.classList.remove('d-none');
-    resultCount.textContent = '';
-  } else {
-    noResults.classList.add('d-none');
-    resultCount.textContent = `${visibleCount} product${visibleCount === 1 ? '' : 's'} found`;
+  if (noResults) {
+    noResults.classList.toggle('d-none', visibleCount !== 0);
+  }
+  if (resultCount) {
+    resultCount.textContent = visibleCount === 0
+      ? ''
+      : `${visibleCount} product${visibleCount === 1 ? '' : 's'} found`;
   }
 }

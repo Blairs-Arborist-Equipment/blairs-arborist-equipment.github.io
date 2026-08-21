@@ -17,9 +17,10 @@ mailer:
   url: "https://api.blairsae.com/mailer"
 
 # Build settings
+theme: null
 markdown: kramdown
-sass:
-  style: compact
+# sass style intentionally unset: github-pages compresses in production and
+# uses the readable `compact` style for local builds.
 plugins:
   - jekyll-seo-tag
 exclude:
@@ -28,6 +29,7 @@ exclude:
   - Pipfile*
   - Makefile
   - README.md
+  - AGENTS.md
   - .gitignore
   - .jekyll-metadata
   - build/

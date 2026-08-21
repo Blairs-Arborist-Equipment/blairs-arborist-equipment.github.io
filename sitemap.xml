@@ -4,89 +4,89 @@ layout: null
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-  <loc>https://blairsae.com/</loc>
+  <loc>{{ site.url }}/</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/products/</loc>
+  <loc>{{ site.url }}/products/</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.85</priority>
 </url>
 {%- for c in site.data.categories %}
 <url>
-  <loc>https://blairsae.com/products/{{ c.name | slugify }}.html</loc>
+  <loc>{{ site.url }}/products/{{ c.name | slugify }}.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.90</priority>
 </url>
 {%- endfor %}
 <url>
-  <loc>https://blairsae.com/privacy-policy.html</loc>
+  <loc>{{ site.url }}/privacy-policy.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.30</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/quote.html</loc>
+  <loc>{{ site.url }}/quote.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center.html</loc>
+  <loc>{{ site.url }}/learning-center.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/the-arborists-creed-and-principles-of-practice.html</loc>
+  <loc>{{ site.url }}/learning-center/the-arborists-creed-and-principles-of-practice.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/euc-men-by-definition.html</loc>
+  <loc>{{ site.url }}/learning-center/euc-men-by-definition.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/when-the-oak-man-met-the-euc-men-by-donald-f-blair.html</loc>
+  <loc>{{ site.url }}/learning-center/when-the-oak-man-met-the-euc-men-by-donald-f-blair.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/a-few-words-about-the-blair-saddle.html</loc>
+  <loc>{{ site.url }}/learning-center/a-few-words-about-the-blair-saddle.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/wire-cored-fliplines.html</loc>
+  <loc>{{ site.url }}/learning-center/wire-cored-fliplines.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/how-to-tie-a-becket-bend-in-a-wire-cored-flipline.html</loc>
+  <loc>{{ site.url }}/learning-center/how-to-tie-a-becket-bend-in-a-wire-cored-flipline.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/climbers-pads-straps.html</loc>
+  <loc>{{ site.url }}/learning-center/climbers-pads-straps.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/tree-and-pole-climbing-spurs.html</loc>
+  <loc>{{ site.url }}/learning-center/tree-and-pole-climbing-spurs.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/replacement-parts-by-brand.html</loc>
+  <loc>{{ site.url }}/learning-center/replacement-parts-by-brand.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/adjustable-lanyards.html</loc>
+  <loc>{{ site.url }}/learning-center/adjustable-lanyards.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://blairsae.com/learning-center/fliplines-and-lanyards.html</loc>
+  <loc>{{ site.url }}/learning-center/fliplines-and-lanyards.html</loc>
   <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
   <priority>0.70</priority>
 </url>
