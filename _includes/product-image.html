@@ -14,16 +14,16 @@
       <picture>
         <source srcset="{{ include.fallback-webp }}" type="image/webp">
         <source srcset="{{ include.fallback-jpg }}" type="image/jpeg">
-        <img src="{{ include.fallback-jpg }}" class="img-fluid d-block w-100" loading="lazy" alt="{{ include.product-name }}">
+        <img src="{{ include.fallback-jpg }}" class="img-fluid d-block w-100" loading="lazy" alt="{{ include.product-name | escape }}">
       </picture>
     {% endif %}
   {% elsif images.size == 1 %}
     <picture>
       <source srcset="{{ images[0] | replace: '.jpg', '.webp' }}" type="image/webp">
       <source srcset="{{ images[0] }}" type="image/jpeg">
-      <img src="{{ images[0] }}" class="card-img-top img-fluid d-block w-100" loading="lazy" alt="{{ include.product-name }}">
+      <img src="{{ images[0] }}" class="card-img-top img-fluid d-block w-100" loading="lazy" alt="{{ include.product-name | escape }}">
     </picture>
-    <button type="button" class="product-image-zoom" data-bs-toggle="modal" data-bs-target="#modal-{{ include.product-slug }}" aria-label="View larger image of {{ include.product-name }}">
+    <button type="button" class="product-image-zoom" data-bs-toggle="modal" data-bs-target="#modal-{{ include.product-slug }}" aria-label="View larger image of {{ include.product-name | escape }}">
       <i class="fas fa-magnifying-glass-plus" aria-hidden="true"></i>
     </button>
   {% else %}
@@ -48,7 +48,7 @@
             <picture>
               <source srcset="{{ image | replace: '.jpg', '.webp' }}" type="image/webp">
               <source srcset="{{ image }}" type="image/jpeg">
-              <img src="{{ image }}" class="img-fluid d-block w-100" loading="lazy" alt="{{ include.product-name }} – image {{ forloop.index }}">
+              <img src="{{ image }}" class="img-fluid d-block w-100" loading="lazy" alt="{{ include.product-name | escape }} – image {{ forloop.index }}">
             </picture>
           </div>
         {% endfor %}
@@ -62,7 +62,7 @@
         <span class="visually-hidden">Next</span>
       </button>
     </div>
-    <button type="button" class="product-image-zoom" data-bs-toggle="modal" data-bs-target="#modal-{{ include.product-slug }}" aria-label="View larger images of {{ include.product-name }}">
+    <button type="button" class="product-image-zoom" data-bs-toggle="modal" data-bs-target="#modal-{{ include.product-slug }}" aria-label="View larger images of {{ include.product-name | escape }}">
       <i class="fas fa-magnifying-glass-plus" aria-hidden="true"></i>
     </button>
   {% endif %}
