@@ -1,5 +1,14 @@
 # Blair's Arborist Equipment
 
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io&metric=alert_status)](https://sonarcloud.io/summary/overall?id=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io)
+[![CodeQL](https://github.com/Blairs-Arborist-Equipment/blairs-arborist-equipment.github.io/actions/workflows/dynamic/github-code-scanning/codeql/badge.svg)](https://github.com/Blairs-Arborist-Equipment/blairs-arborist-equipment.github.io/actions/workflows/dynamic/github-code-scanning/codeql)
+[![Pages](https://github.com/Blairs-Arborist-Equipment/blairs-arborist-equipment.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://blairsae.com/)
+
+[![Security](https://sonarcloud.io/api/project_badges/measure?project=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io&metric=security_rating)](https://sonarcloud.io/summary/overall?id=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io)
+[![Reliability](https://sonarcloud.io/api/project_badges/measure?project=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io)
+[![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=Blairs-Arborist-Equipment_blairs-arborist-equipment.github.io)
+
 This is the repository for the Blair's Arborist Equipment static website (hosted on GitHub Pages, proxied through Cloudflare).
 
 ## Technology Stack
@@ -17,21 +26,26 @@ This is the repository for the Blair's Arborist Equipment static website (hosted
 
 ```
 ├── _config.yml         # Jekyll settings, Turnstile site key, mailer url
+├── .sonarcloud.properties # SonarQube Cloud automatic-analysis scope
 ├── _data/
 │   ├── categories.yml  # Flat list of top-level product categories
 │   └── products.csv    # Inventory items (downloaded via make csv)
 ├── _includes/          # Reusable component HTML fragments
 │   ├── contact.html    # Balanced email/facebook footer contact columns
 │   ├── footer.html     # Dynamic copyright year & Privacy Policy link
-│   └── head.html       # Google/CF analytics and CSS CDN imports
+│   ├── head.html       # Cloudflare analytics, SEO/schema, CDN imports
+│   └── scripts.html    # Script tags + window.BAE_CONFIG for the JS below
 ├── _layouts/           # Page structures (home, products, quote, page, article)
 ├── _sass/              # SASS styling files (custom theme rules only)
 ├── css/                # Main CSS stylesheet entries
 ├── email/
 │   └── template.html   # Email body template sent by mailer backend
-├── js/
+├── js/                 # Plain ES6 — no Liquid, no front matter
+│   ├── products-view.js # Wraps description tables for responsiveness
 │   ├── quote.js        # Cart localstorage state + vanilla form handlers
-│   └── scripts.js      # Navbar collapse & responsive styling scripts
+│   ├── scripts.js      # Navbar collapse & responsive styling scripts
+│   ├── search.js       # Client-side product search/filter
+│   └── theme.js        # Light/dark theme toggle
 └── privacy-policy.html # Minimal Privacy Policy (required by Turnstile terms)
 ```
 
@@ -108,7 +122,10 @@ Or run the checks individually with `make lint` (YAML only) or `make build` (Jek
 
 ## Secrets & Config
 
-Secrets like the `turnstile.site_key` and backend mailer API endpoints are kept in `_config.yml`.
+The `turnstile.site_key` and the mailer API endpoint live in `_config.yml`. Neither is
+a secret — both are public by design and ship in the built HTML. The corresponding
+Turnstile **secret** key is held only by the mailer backend and must never appear in
+this repository.
 
 > [!NOTE]
 > The backend server (which receives quotes and contact requests, validates the Turnstile response token, and sends emails) lives in a separate repository under `api.blairsae.com`.
