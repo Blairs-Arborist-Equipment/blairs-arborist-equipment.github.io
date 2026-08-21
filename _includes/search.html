@@ -17,48 +17,70 @@
     <h2 class="visually-hidden">Product Catalog</h2>
 
     <div class="products-container" id="products-container" role="list">
+      {% assign seen-slugs = "" %}
       {% for p in site.data.products %}
       {% assign images = p.images | split: "|" %}
       {% assign skus = p.skus | split: ";" %}
       {% assign tags = p.category | split: "|" %}
-      {% capture product-slug %}{{ p.name | slugify }}{% endcapture %}
+      {%- comment -%} See _includes/products.html for why names are normalized
+        and why repeated slugs are suffixed. {%- endcomment -%}
+      {% assign product-name = p.name | replace: '&#8211;', '–' | replace: '&#8243;', '″' | strip %}
+      {% assign base-slug = product-name | slugify | truncate: 80, "" %}
+      {% capture slug-probe %}|{{ base-slug }}|{% endcapture %}
+      {% if seen-slugs contains slug-probe %}
+        {% capture product-slug %}{{ base-slug }}-{{ forloop.index }}{% endcapture %}
+      {% else %}
+        {% assign product-slug = base-slug %}
+      {% endif %}
+      {% assign seen-slugs = seen-slugs | append: slug-probe %}
       {% assign top-category-names = site.data.categories | map: "name" %}
       {% assign category-segments = p.category | split: "|" %}
       {% assign product-top-category = category-segments[0] | strip %}
-      {% if top-category-names contains product-top-category or product-top-category == "Uncategorized" %}
-        {% capture product-href %}/products/{{ product-top-category | slugify }}.html#{{ product-slug }}{% endcapture %}
+      {%- comment -%} "Uncategorized" is now a real entry in _data/categories.yml,
+        so no special case is needed here. {%- endcomment -%}
+      {% if top-category-names contains product-top-category %}
+        {% assign product-category-slug = product-top-category | slugify %}
+        {% capture product-href %}/products/{{ product-category-slug }}.html#{{ product-slug }}{% endcapture %}
       {% else %}
+        {% assign product-category-slug = "" %}
         {% capture product-href %}/products/#{{ product-slug }}{% endcapture %}
       {% endif %}
-      <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ p.name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-category="{{ p.category | escape }}" data-skus="{{ p.skus | escape }}">
+      <div class="card" id="{{ product-slug }}" role="listitem" data-name="{{ product-name | escape }}" data-description="{{ p.description | strip_html | escape }}" data-category="{{ p.category | escape }}" data-skus="{{ p.skus | escape }}">
         {% include product-image.html
            product-slug=product-slug
-           product-name=p.name
+           product-name=product-name
            images=images
         %}
         <div class="card-body">
           <h3 class="card-title" id="name-{{ product-slug }}">
-            <a href="{{ product-href }}" class="text-wrap">{{ p.name }}</a>
+            <a href="{{ product-href }}" class="text-wrap">{{ product-name | escape }}</a>
           </h3>
           <div class="card-text description-content">{{ p.description }}</div>
           <p class="card-text">
           {% for tag in tags %}
-            <span class="badge rounded-pill badge-earth text-dark">{{ tag }}</span>
+            {% assign tag-label = tag | strip %}
+            {% if tag-label != "" %}
+            <span class="badge rounded-pill badge-earth text-dark">{{ tag-label | escape }}</span>
+            {% endif %}
           {% endfor %}
           </p>
+          {% if skus.size > 0 %}
           <div class="input-group input-group-sm">
-            <select class="form-select" id="sku-{{ product-slug }}">
+            <select class="form-select" id="sku-{{ product-slug }}" aria-label="Select a SKU for {{ product-name | escape }}">
               {% for sku in skus %}
-                <option value="{{ sku }}">{{ sku }}</option>
+                <option value="{{ sku | escape }}">{{ sku | escape }}</option>
               {% endfor %}
             </select>
-            <button id="btn-{{ product-slug }}" class="btn btn-outline-secondary btn-add-to-quote" data-bs-toggle="popover" data-bs-content="Added" data-bs-trigger="focus" type="button" onclick="saveItem('', '{{ product-slug }}')">Add to Quote</button>
+            <button id="btn-{{ product-slug }}" class="btn btn-outline-secondary btn-add-to-quote" data-bs-toggle="popover" data-bs-content="Added" data-bs-trigger="focus" type="button" onclick="saveItem('{{ product-category-slug }}', '{{ product-slug }}')">Add to Quote</button>
           </div>
+          {% else %}
+          <p class="card-text"><small class="text-muted">Contact us for availability on this item.</small></p>
+          {% endif %}
         </div>
       </div>
       {% include product-lightbox.html
          product-slug=product-slug
-         product-name=p.name
+         product-name=product-name
          images=images
       %}
       {% endfor %}
