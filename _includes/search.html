@@ -5,7 +5,8 @@
         <input type="text" id="product-search-input" class="form-control" placeholder="Search by name, description, or SKU…" aria-label="Search products">
       </div>
       <div class="col-md-6">
-        <select id="product-search-category" class="form-select" aria-label="Filter by category">
+        <label class="visually-hidden" for="product-search-category">Filter by category</label>
+        <select id="product-search-category" class="form-select">
           <option value="">All Categories</option>
           {% for c in site.data.categories %}
             <option value="{{ c.name }}">{{ c.name }}</option>

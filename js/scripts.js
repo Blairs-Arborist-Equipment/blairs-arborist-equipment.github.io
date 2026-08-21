@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Bootstrap ScrollSpy
   const mainNav = document.body.querySelector('#mainNav');
   if (mainNav) {
-    new bootstrap.ScrollSpy(document.body, {
+    // getOrCreateInstance rather than a discarded `new`: it returns the
+    // instance and will not double-register if one already exists.
+    bootstrap.ScrollSpy.getOrCreateInstance(document.body, {
       target: '#mainNav',
       rootMargin: '0px 0px -40%'
     });
