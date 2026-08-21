@@ -81,7 +81,6 @@ function totalQuantity() {
     if (!key.startsWith('bae_')) {
       continue;
     }
-    const decodedKey = atob(key.replace('bae_', ''));
     const qty = parseInt(localStorage.getItem(key)) || 0;
     count += qty;
   }

@@ -17,6 +17,7 @@ mailer:
   url: "https://api.blairsae.com/mailer"
 
 # Build settings
+theme: null
 markdown: kramdown
 sass:
   style: compact
@@ -28,6 +29,7 @@ exclude:
   - Pipfile*
   - Makefile
   - README.md
+  - AGENTS.md
   - .gitignore
   - .jekyll-metadata
   - build/

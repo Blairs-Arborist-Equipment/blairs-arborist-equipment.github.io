@@ -9,7 +9,6 @@
   --bs-secondary: #1a1a1a;
   --bs-secondary-rgb: 26, 26, 26;
   --primary: var(--bs-primary);
-  --secondary: var(--bs-secondary);
   --color-dark-bg: #0f1419;
   --color-card-bg: #1a2332;
   --color-text-light: #f0f0f0;
@@ -19,13 +18,11 @@
   --bs-focus-ring-color: rgba(76, 175, 80, 0.5);
 
   /* Spacing scale — 4px/8px baseline */
-  --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
-  --space-12: 3rem;
 
   /* Type scale — bigger, bolder */
   --font-size-h1: 3.5rem;
@@ -33,17 +30,10 @@
   --font-size-h3: 1.8rem;
   --font-size-h4: 1.3rem;
   --font-size-h5: 1.1rem;
-  --font-size-body: 1rem;
-  --font-size-small: 0.875rem;
   --line-height-heading: 1.1;
-  --line-height-body: 1.6;
 
   /* Shadows */
-  --elevation-0: none;
-  --elevation-1: 0 4px 6px rgba(0, 0, 0, 0.3);
   --elevation-2: 0 8px 16px rgba(0, 0, 0, 0.4);
-  --elevation-3: 0 16px 32px rgba(0, 0, 0, 0.5);
-  --elevation-4: 0 24px 48px rgba(0, 0, 0, 0.6);
 }
 
 /* Light mode (default or explicitly set) */
