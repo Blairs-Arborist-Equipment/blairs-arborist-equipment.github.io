@@ -6,10 +6,17 @@
          {% if page.header.logo %}
            <picture>
              <source srcset="{{ page.header.logo.path }}" type="image/jpeg">
-             <img class="img-fluid" alt="{{ page.title }}" src="{{ page.header.logo.path }}">
+             <img class="img-fluid" alt="{{ page.title | escape }}" src="{{ page.header.logo.path }}">
            </picture>
+         {%- comment -%}
+           header.heading may carry display markup (e.g. a <br/>). page.title
+           must stay plain text so {% seo %} does not strip it into the
+           <title> and og:title as run-together words.
+         {%- endcomment -%}
+         {% elsif page.header.heading %}
+           {{ page.header.heading }}
          {% else %}
-           {{ page.title }}
+           {{ page.title | escape }}
          {% endif %}
        </h1>
        <hr class="divider my-4" />

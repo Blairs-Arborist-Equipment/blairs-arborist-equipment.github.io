@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const headerOffset = 72;
         const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
         window.scrollTo({
           top: offsetPosition,
@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', () => {
         // Only trigger collapse close if the toggler is visible (i.e. mobile view)
         if (window.getComputedStyle(navbarToggler).display !== 'none') {
-          const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse);
+          // toggle:false — the constructor would otherwise show the menu
+          // before hide() runs, causing a flash.
+          const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse)
+            || new bootstrap.Collapse(navbarCollapse, { toggle: false });
           bsCollapse.hide();
         }
       });
@@ -57,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   navbarShrink();
 
   // Shrink the navbar when page is scrolled
-  document.addEventListener('scroll', navbarShrink);
+  document.addEventListener('scroll', navbarShrink, { passive: true });
 
   // Initialize Bootstrap ScrollSpy
   const mainNav = document.body.querySelector('#mainNav');

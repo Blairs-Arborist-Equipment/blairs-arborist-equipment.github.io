@@ -6,7 +6,11 @@
         <div class="col-lg-3 col-md-4 col-sm-6 text-center">
           <div class="card category category-card" role="listitem">
             <a href="/products/{{ c.name | slugify }}.html" target="_self">
-            <img class="card-img-top" src="{{ site.image.url }}/assets/categories/{{ c.name | slugify }}.jpg" loading="lazy" alt="{{ c.name }}">
+            {%- comment -%}
+              Fall back to a neutral placeholder if the CDN has no image for
+              this category, rather than showing a broken-image icon.
+            {%- endcomment -%}
+            <img class="card-img-top" src="{{ site.image.url }}/assets/categories/{{ c.name | slugify }}.jpg" loading="lazy" alt="{{ c.name | escape }}" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%231a2332%22/%3E%3Cpath d=%22M200 92l42 74h-84z%22 fill=%22%234CAF50%22/%3E%3Crect x=%22193%22 y=%22166%22 width=%2214%22 height=%2242%22 fill=%22%235C4D42%22/%3E%3C/svg%3E';">
             <div class="card-body">
               <h3 class="card-title align-middle" style="height: 1.5em;max-height: 2.5em;">{{ c.name }}</h3>
             </div>
