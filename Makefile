@@ -60,9 +60,11 @@ build:
 	echo "Building..."
 	bundle exec jekyll build
 
+# email/ holds a mailer template full of {{ placeholder }} tokens that are not
+# Jekyll variables; htmlproofer cannot resolve them as links.
 test: lint build
 	echo "Checking for broken internal links/images..."
-	bundle exec htmlproofer ./_site --disable-external
+	bundle exec htmlproofer ./_site --disable-external --ignore-files "/email/"
 
 serve:
 	echo "Starting server..."
@@ -79,13 +81,34 @@ clean-all: clean
 DOC_ID="1hn2bz8tPRGwoSZ5PfDPWYf_MhcGC691MwMG7QG2YDLQ"
 SHT_ID="78365660"
 CSV="_data/products.csv"
-csv:
-	echo "Downloading CSV..."
-	wget -q "https://docs.google.com/spreadsheets/d/$(DOC_ID)/export?format=csv&gid=$(SHT_ID)" -O "$(CSV)"
-	dos2unix $(CSV)
+HDR="skus,name,description,category,images"
 
+# Download to a temp file and validate before replacing the tracked CSV.
+# `wget -O` truncates its target up front, and a sheet whose sharing has been
+# revoked returns HTTP 200 with an HTML login page — either way the catalog
+# would be silently destroyed.
+csv:
+	@echo "Downloading CSV..."
+	@tmp=$$(mktemp) && \
+	if ! wget -q "https://docs.google.com/spreadsheets/d/$(DOC_ID)/export?format=csv&gid=$(SHT_ID)" -O "$$tmp"; then \
+		rm -f "$$tmp"; echo "ERROR: download failed; $(CSV) left unchanged."; exit 1; \
+	fi && \
+	dos2unix -q "$$tmp" && \
+	if [ "$$(head -1 "$$tmp")" != $(HDR) ]; then \
+		rm -f "$$tmp"; echo "ERROR: unexpected header (is the sheet still shared?); $(CSV) left unchanged."; exit 1; \
+	fi && \
+	rows=$$(($$(wc -l < "$$tmp") - 1)) && \
+	if [ "$$rows" -lt 100 ]; then \
+		rm -f "$$tmp"; echo "ERROR: only $$rows rows, expected >=100; $(CSV) left unchanged."; exit 1; \
+	fi && \
+	mv "$$tmp" $(CSV) && chmod 644 $(CSV) && \
+	echo "Updated $(CSV) ($$rows rows)."
+
+# Push HEAD to main explicitly. `git push origin main` pushed the local main
+# ref, which does not contain the commit just made on another branch, so the
+# push reported success while the inventory never shipped.
 csv-commit: csv
-	echo "Committing CSV..."
+	@echo "Committing CSV..."
 	git add $(CSV)
 	git commit -m 'updated inventory'
-	git push origin main
+	git push origin HEAD:main
