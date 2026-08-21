@@ -29,8 +29,8 @@
   // keeps following their OS setting.
   function applyTheme(theme) {
     const html = document.documentElement;
-    html.setAttribute('data-theme', theme);
-    html.setAttribute('data-bs-theme', theme);
+    html.dataset.theme = theme;
+    html.dataset.bsTheme = theme;
     updateThemeButton(theme);
   }
 

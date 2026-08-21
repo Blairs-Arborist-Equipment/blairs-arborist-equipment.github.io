@@ -5,7 +5,7 @@ const MAILER_URL = (window.BAE_CONFIG && window.BAE_CONFIG.mailerUrl) || '';
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Bootstrap Popovers
   const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-  [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+  popoverTriggerList.forEach(el => new bootstrap.Popover(el));
 
   quoteBadge();
 });
@@ -59,7 +59,7 @@ function saveItem(category, product) {
   const key = sku + "|!|" + product + "|!|" + name + "|!|" + category;
   const storageKey = "bae_" + b64encode(key);
   // Keep any quantity the user already set rather than resetting it to 1.
-  const existing = parseInt(localStorage.getItem(storageKey), 10);
+  const existing = Number.parseInt(localStorage.getItem(storageKey), 10);
   const val = existing > 0 ? existing : 1;
   if (!storageSet(storageKey, val)) return;
 
@@ -86,7 +86,7 @@ function removeItem(key) {
 //------------------------------------------------------------------------------
 // increase item quantity
 function increaseItem(key) {
-  let val = parseInt(localStorage.getItem("bae_" + key), 10) || 1;
+  let val = Number.parseInt(localStorage.getItem("bae_" + key), 10) || 1;
   val += 1;
   storageSet("bae_" + key, val);
   quoteShowAll();
@@ -96,7 +96,7 @@ function increaseItem(key) {
 //------------------------------------------------------------------------------
 // decrease item quantity
 function decreaseItem(key) {
-  let val = parseInt(localStorage.getItem("bae_" + key), 10) || 1;
+  let val = Number.parseInt(localStorage.getItem("bae_" + key), 10) || 1;
   if (val === 1) {
     return;
   }
@@ -133,7 +133,7 @@ function emptyQuote() {
 // return total quote item quantity
 function totalQuantity() {
   return quoteKeys().reduce((count, key) => {
-    return count + (parseInt(localStorage.getItem(key), 10) || 0);
+    return count + (Number.parseInt(localStorage.getItem(key), 10) || 0);
   }, 0);
 }
 
@@ -152,81 +152,83 @@ function quoteBadge() {
 }
 
 //--------------------------------------------------------------------------------------
+// Decode one stored item. Returns null (and drops the key) if it is unreadable,
+// so a single malformed entry cannot blank the whole table.
+function readQuoteItem(storageKey) {
+  const rawKey = storageKey.replace('bae_', '');
+  let decodedKey;
+  try {
+    decodedKey = b64decode(rawKey);
+  } catch (err) {
+    localStorage.removeItem(storageKey);
+    return null;
+  }
+  const [sku, slug, name, category] = decodedKey.split('|!|');
+  const qty = Number.parseInt(localStorage.getItem(storageKey), 10) || 1;
+  return { rawKey, decodedKey, sku, slug, name, category, qty };
+}
+
+// Items added from the search-all page carry no category; link to the search
+// page rather than building a dead /products/.html#slug URL.
+function quoteItemHref(item) {
+  return item.category
+    ? '/products/' + encodeURIComponent(item.category) + '.html#' + item.slug
+    : '/products/#' + item.slug;
+}
+
+function quoteItemRow(item) {
+  const { rawKey, decodedKey, sku, slug, name, qty } = item;
+  const hidden = b64encode(qty + '|!|' + decodedKey);
+  const decreaseDisabled = qty === 1 ? ' disabled aria-disabled="true"' : '';
+  const btn = (action, icon, extra) =>
+    '<button type="button" class="btn btn-sm btn-secondary"' + (extra || '')
+    + ' onclick="' + action + "('" + rawKey + "');\">"
+    + '<i class="' + icon + '"></i></button>';
+
+  return '<tr>'
+    + '<th scope="row">'
+    + '<div class="mb-4">'
+    + '<input type="hidden" name="item-' + escapeHtml(slug) + '" value="' + hidden + '" />'
+    + '<a href="' + escapeHtml(quoteItemHref(item)) + '" class="text-wrap">' + escapeHtml(name) + '</a>'
+    + '</div>'
+    + '<div class="btn-group me-2" role="group">'
+    + btn('decreaseItem', 'fas fa-minus', decreaseDisabled)
+    + '<input type="text" class="form-control form-control-sm text-center" value="' + qty + '" size="1" style="width: 40px; display: inline-block;" readonly />'
+    + btn('increaseItem', 'fas fa-plus')
+    + '</div>'
+    + '<div class="btn-group me-2" role="group">'
+    + btn('removeItem', 'far fa-trash-alt')
+    + '</div>'
+    + '</th>'
+    + '<td class="text-center">' + escapeHtml(sku) + '</td>'
+    + '</tr>\n';
+}
+
+//--------------------------------------------------------------------------------------
 // dynamically populate the table with shopping list items
 function quoteShowAll() {
-  if (CheckBrowser()) {
-    let name = "";
-    let sku = "";
-    let qty = 0;
-    let list = "";
-    const quoteFormClient = document.getElementById("quote-form-client");
+  const tbody = document.querySelector("#quote-table tbody");
+  if (!tbody) return;
 
-    for (const storageKey of quoteKeys()) {
-      const rawKey = storageKey.replace('bae_', '');
-      let decodedKey;
-      try {
-        decodedKey = b64decode(rawKey);
-      } catch (err) {
-        // A single malformed key must not blank the whole table. Drop it.
-        localStorage.removeItem(storageKey);
-        continue;
-      }
-      const parts = decodedKey.split('|!|');
-      sku = parts[0];
-      const slug = parts[1];
-      name = parts[2];
-      const category = parts[3];
-      qty = parseInt(localStorage.getItem(storageKey), 10) || 1;
-      const item = qty + '|!|' + decodedKey;
-      // Items added from the search-all page carry no category; link to the
-      // search page rather than building a dead /products/.html#slug URL.
-      const href = category
-        ? '/products/' + encodeURIComponent(category) + '.html#' + slug
-        : '/products/#' + slug;
+  if (!CheckBrowser()) {
+    tbody.innerHTML = '<tr><th scope="row" colspan="2">Cannot save shopping list. Your browser does not support HTML 5</th></tr>';
+    return;
+  }
 
-      let decreaseButtonDisabled = "";
-      if (qty === 1) {
-        decreaseButtonDisabled = ' disabled aria-disabled="true"';
-      }
+  const list = quoteKeys()
+    .map(readQuoteItem)
+    .filter(Boolean)
+    .map(quoteItemRow)
+    .join('');
 
-      list += '<tr>'
-        + '<th scope="row">'
-        + '<div class="mb-4">'
-        + '<input type="hidden" name="item-' + escapeHtml(slug) + '" value="' + b64encode(item) + '" />'
-        + '<a href="' + escapeHtml(href) + '" class="text-wrap">' + escapeHtml(name) + '</a>'
-        + '</div>'
-        + '<div class="btn-group me-2" role="group">'
-        + '<button type="button" class="btn btn-sm btn-secondary"' + decreaseButtonDisabled + ' onclick="decreaseItem(' + "'" + rawKey + "'" + ');"><i class="fas fa-minus"></i></button>'
-        + '<input type="text" class="form-control form-control-sm text-center" value="' + qty + '" size="1" style="width: 40px; display: inline-block;" readonly />'
-        + '<button type="button" class="btn btn-sm btn-secondary" onclick="increaseItem(' + "'" + rawKey + "'" + ');"><i class="fas fa-plus"></i></button>'
-        + '</div>'
-        + '<div class="btn-group me-2" role="group">'
-        + '<button type="button" class="btn btn-sm btn-secondary" onclick="removeItem(' + "'" + rawKey + "'" + ');"><i class="far fa-trash-alt"></i></button>'
-        + '</div>'
-        + '</th>'
-        + '<td class="text-center">' + escapeHtml(sku) + '</td>'
-        + '</tr>\n';
-    }
+  const isEmpty = list === "";
+  tbody.innerHTML = isEmpty
+    ? '<tr><th scope="row" class="text-center" colspan="2"><i>No Items in Quote</i></th></tr>\n'
+    : list;
 
-    const tbody = document.querySelector("#quote-table tbody");
-    if (tbody) {
-      if (list === "") {
-        tbody.innerHTML = '<tr><th scope="row" class="text-center" colspan="2"><i>No Items in Quote</i></th></tr>\n';
-        if (quoteFormClient) {
-          quoteFormClient.classList.add('d-none');
-        }
-      } else {
-        tbody.innerHTML = list;
-        if (quoteFormClient) {
-          quoteFormClient.classList.remove('d-none');
-        }
-      }
-    }
-  } else {
-    const tbody = document.querySelector("#quote-table tbody");
-    if (tbody) {
-      tbody.innerHTML = '<tr><th scope="row" colspan="2">Cannot save shopping list. Your browser does not support HTML 5</th></tr>';
-    }
+  const quoteFormClient = document.getElementById("quote-form-client");
+  if (quoteFormClient) {
+    quoteFormClient.classList.toggle('d-none', isEmpty);
   }
 }
 

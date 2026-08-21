@@ -64,12 +64,15 @@
               {% endfor %}
               </p>
               {%- comment -%}
-                Without a SKU there is nothing to add, and an empty <select>
+                Without a SKU there is nothing to add, and an empty dropdown
                 made "Add to Quote" throw. Say so instead of offering it.
+                (Avoid writing literal HTML tags in this comment: analyzers
+                that do not parse Liquid read them as real elements.)
               {%- endcomment -%}
               {% if skus.size > 0 %}
+              <label class="visually-hidden" for="sku-{{ product-slug }}">Select a SKU for {{ product-name | escape }}</label>
               <div class="input-group input-group-sm">
-                <select class="form-select" id="sku-{{ product-slug }}" aria-label="Select a SKU for {{ product-name | escape }}">
+                <select class="form-select" id="sku-{{ product-slug }}">
                   {% for sku in skus %}
                     <option value="{{ sku | escape }}">{{ sku | escape }}</option>
                   {% endfor %}

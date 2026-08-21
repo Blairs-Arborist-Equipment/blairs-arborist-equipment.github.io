@@ -53,10 +53,10 @@ function renderResults() {
   let visibleCount = 0;
 
   cards.forEach(card => {
-    const name = card.getAttribute('data-name') || '';
-    const description = card.getAttribute('data-description') || '';
-    const category = card.getAttribute('data-category') || '';
-    const skus = card.getAttribute('data-skus') || '';
+    const name = card.dataset.name || '';
+    const description = card.dataset.description || '';
+    const category = card.dataset.category || '';
+    const skus = card.dataset.skus || '';
 
     // Category filter
     let matchesCategory = true;

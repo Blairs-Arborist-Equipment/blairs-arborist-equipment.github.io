@@ -65,8 +65,9 @@
           {% endfor %}
           </p>
           {% if skus.size > 0 %}
+          <label class="visually-hidden" for="sku-{{ product-slug }}">Select a SKU for {{ product-name | escape }}</label>
           <div class="input-group input-group-sm">
-            <select class="form-select" id="sku-{{ product-slug }}" aria-label="Select a SKU for {{ product-name | escape }}">
+            <select class="form-select" id="sku-{{ product-slug }}">
               {% for sku in skus %}
                 <option value="{{ sku | escape }}">{{ sku | escape }}</option>
               {% endfor %}

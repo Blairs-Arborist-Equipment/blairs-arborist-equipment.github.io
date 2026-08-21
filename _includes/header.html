@@ -9,9 +9,11 @@
              <img class="img-fluid" alt="{{ page.title | escape }}" src="{{ page.header.logo.path }}">
            </picture>
          {%- comment -%}
-           header.heading may carry display markup (e.g. a <br/>). page.title
-           must stay plain text so {% seo %} does not strip it into the
-           <title> and og:title as run-together words.
+           header.heading may carry display markup, such as a line break.
+           page.title must stay plain text so the seo tag does not strip it
+           into the document title and og:title as run-together words.
+           (Avoid literal HTML tags in Liquid comments: analyzers that do
+           not parse Liquid read them as real elements.)
          {%- endcomment -%}
          {% elsif page.header.heading %}
            {{ page.header.heading }}
